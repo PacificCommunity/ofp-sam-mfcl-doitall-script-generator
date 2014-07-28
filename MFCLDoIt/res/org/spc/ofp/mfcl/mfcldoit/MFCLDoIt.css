@@ -1,0 +1,69 @@
+/***********************************************************************
+ *  Copyright - Secretariat of the Pacific Community                   *
+ *  Droit de copie - Secrétariat Général de la Communauté du Pacifique *
+ *  http://www.spc.int/                                                *
+ ***********************************************************************/
+.root{    
+}
+.h1 {
+    -fx-font-size: 1.2em;
+    -fx-font-weight: bold;
+    -fx-opacity: 0.33;
+}
+.h2 {
+    -fx-font-size: 1.1em;
+    -fx-font-weight: bold;
+    -fx-opacity: 0.33;
+}
+.h3 {
+    -fx-font-size: 1.05em;
+    -fx-font-weight: bold;
+}
+.h4 {
+    -fx-font-size: 1.05em;
+    -fx-font-weight: bold;
+    -fx-font-style: italic;
+}
+/**/
+.error {
+    -fx-base: derive(red, 75%);
+    -fx-text-fill: red;
+    -fx-prompt-text-fill: derive(red, 100%);    
+}
+.error .text-field {
+    -fx-prompt-text-fill: derive(red, 100%);    
+}
+.error .context-menu {
+    -fx-base: #ececec;
+}
+.combo-box-popup {
+    -fx-base: #ececec;
+}
+/**/
+.container-pane {
+    -fx-padding: 6px;
+}
+.grid-pane {
+    -fx-hgap: 6px;
+    -fx-vgap: 6px;
+}
+.vbox {
+    -fx-spacing: 6px;
+}
+.hbox {
+    -fx-spacing: 6px;
+}
+.button-box {
+    -fx-padding: 6px;
+    -fx-spacing: 6px;
+    -fx-alignment: center;
+}
+.main-button {
+    -fx-base: royalblue;
+    -fx-font-size: 1.5em;
+    -fx-font-weight: bold;
+}
+.main-button .tooltip {
+    -fx-font-size: 0.85em;
+    -fx-font-weight: normal;
+}

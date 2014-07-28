@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Copyright - Secretariat of the Pacific Community                   
+  Droit de copie - Secrétariat Général de la Communauté du Pacifique 
+  http://www.spc.int/                                                
+-->
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" fx:id="rootPane" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.spc.ofp.mfcl.mfcldoit.MainUIController">
+    <children>
+        <BorderPane fx:id="borderPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <center>
+                <HBox styleClass="hbox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <children>
+                        <TabPane fx:id="tabPane" prefWidth="400.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+                            <tabs>
+                                <Tab fx:id="projectTab" text="%PROJECT_LABEL">
+                           <content>
+                                          <fx:include fx:id="projectConfigPane" source="control/project/ProjectConfigPane.fxml" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" />
+                           </content>
+                                </Tab>
+                            </tabs>
+                        </TabPane>
+                        <VBox fx:id="previewVBox" prefHeight="200.0" prefWidth="100.0" styleClass="vbox" BorderPane.alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <children>
+                                <Label fx:id="previewLabel" style="-fx-padding: 0 0 0 6;" styleClass="h1" text="%PREVIEW_LABEL" />
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+            </center>
+            <bottom>
+                <HBox fx:id="exportBox" styleClass="button-box">
+                    <children>
+                  <Label fx:id="pathLabel" styleClass="h1" text="%PATH_LABEL" />
+                  <TextField fx:id="pathField" promptText="%PATH_PROMPT" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="browseButton" mnemonicParsing="false" onAction="#handleBrowseButton" text="%BROWSE_LABEL">
+                     <tooltip>
+                        <Tooltip fx:id="browseTip" text="%BROWSE_TIP" />
+                     </tooltip>
+                  </Button>
+                        <Button fx:id="exportButton" onAction="#handleCreateButton" styleClass="main-button" text="%CREATE_LABEL">
+                     <tooltip>
+                        <Tooltip fx:id="exportTip" text="%CREATE_TIP" />
+                     </tooltip></Button>
+                    </children>
+                </HBox>
+            </bottom>
+        </BorderPane>
+    </children>
+</AnchorPane>
