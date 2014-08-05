@@ -5,6 +5,9 @@
  ***********************************************************************/
 .root{    
 }
+.titled-pane > * > * > AnchorPane {
+    -fx-padding: 0px;
+}
 .h1 {
     -fx-font-size: 1.2em;
     -fx-font-weight: bold;

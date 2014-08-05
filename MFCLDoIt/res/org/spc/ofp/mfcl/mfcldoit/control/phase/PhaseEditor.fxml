@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Copyright - Secretariat of the Pacific Community                   
+  Droit de copie - Secrétariat Général de la Communauté du Pacifique 
+  http://www.spc.int/                                                
+-->
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" fx:id="" prefHeight="400.0" prefWidth="200" styleClass="container-pane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.spc.ofp.mfcl.mfcldoit.control.phase.PhaseEditorController">
+    <children>
+        <Accordion layoutX="85.0" layoutY="114.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <panes>
+                <TitledPane animated="true" expanded="true" text="%PHASE_SETTINGS_LABEL">
+                    <content>
+                        <AnchorPane styleClass="container-pane">
+                            <children>
+                                <Accordion layoutX="85.0" layoutY="114.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <panes>
+                                        <TitledPane animated="true" text="%PHASE_PAREST_FLAGS_LABEL" />
+                                        <TitledPane animated="true" text="%PHASE_AGE_FLAGS_LABEL" />
+                                        <TitledPane animated="true" expanded="true" text="%PHASE_FISH_FLAGS_LABEL">
+                                            <content>
+                                                <fx:include fx:id="fishFlagsEditor" source="FishFlagsEditor.fxml" />
+                                            </content>
+                                        </TitledPane>                            
+                                        <TitledPane animated="true" text="%PHASE_REGION_FLAGS_LABEL" />
+                                        <TitledPane animated="true" text="%PHASE_TAG_FLAGS_LABEL" />
+                                    </panes>
+                                </Accordion>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </TitledPane>
+                <TitledPane fx:id="preActionsPane" animated="true" text="%PRE_ACTIONS_LABEL">
+                    <content>
+                        <TextArea fx:id="preActionsArea" prefHeight="200.0" prefWidth="200.0" promptText="%PRE_ACTIONS_PROMPT" />
+                    </content>
+                </TitledPane>
+                <TitledPane fx:id="postActionsPane" animated="true" text="%POST_ACTIONS_LABEL">
+                    <content>
+                        <TextArea fx:id="postActionsArea" prefHeight="200.0" prefWidth="200.0" promptText="%POST_ACTIONS_PROMPT" />
+                    </content>
+                </TitledPane>
+            </panes>
+        </Accordion>
+    </children>
+</AnchorPane>
