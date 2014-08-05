@@ -49,13 +49,13 @@
             </Button>
             <Label fx:id="preActionsLabel" styleClass="h1" text="%PRE_ACTIONS_LABEL" GridPane.rowIndex="4" />
             <TextArea fx:id="preActionsArea" prefRowCount="3" promptText="%PRE_ACTIONS_PROMPT" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" />
+            <CheckBox fx:id="includePreActionsHeaderCheck" mnemonicParsing="false" selected="true" text="%GENERAL_INCLUDE_HEADER_LABEL" GridPane.columnSpan="2147483647" GridPane.rowIndex="6" />
             <Label fx:id="phaseLabel" styleClass="h1" text="%PHASES_LABEL" GridPane.columnSpan="2147483647" GridPane.rowIndex="7" />
             <Label fx:id="phaseNumberLabel" text="%PHASE_NUMBER_LABEL" GridPane.rowIndex="8" />
             <TextField fx:id="phaseNumberField" promptText="%PHASE_NUMBER_PROMPT" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="8" />
+            <CheckBox fx:id="includePhaseHeadersCheck" mnemonicParsing="false" selected="true" text="%GENERAL_INCLUDE_HEADER_LABEL" GridPane.columnSpan="2147483647" GridPane.rowIndex="9" />
             <Label fx:id="postActionsLabel" styleClass="h1" text="%POST_ACTIONS_LABEL" GridPane.rowIndex="10" />
             <TextArea fx:id="postActionsArea" prefRowCount="3" promptText="%POST_ACTIONS_PROMPT" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="11" />
-            <CheckBox fx:id="includePreActionsHeaderCheck" mnemonicParsing="false" selected="true" text="%GENERAL_INCLUDE_HEADER_LABEL" GridPane.columnSpan="2147483647" GridPane.rowIndex="6" />
-            <CheckBox fx:id="includePhaseHeadersCheck" mnemonicParsing="false" selected="true" text="%GENERAL_INCLUDE_HEADER_LABEL" GridPane.columnSpan="2147483647" GridPane.rowIndex="9" />
             <CheckBox fx:id="includePostActionsHeaderCheck" mnemonicParsing="false" selected="true" text="%GENERAL_INCLUDE_HEADER_LABEL" GridPane.columnSpan="2147483647" GridPane.rowIndex="12" />
          </children>
       </GridPane>
