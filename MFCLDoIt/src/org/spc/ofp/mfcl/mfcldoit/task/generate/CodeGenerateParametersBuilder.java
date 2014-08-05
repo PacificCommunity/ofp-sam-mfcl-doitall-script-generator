@@ -39,6 +39,9 @@ public final class CodeGenerateParametersBuilder {
         result.useRelativePath = useRelativePath;
         result.preActions = preActions;
         result.postActions = postActions;
+        result.includePhaseHeaders = includePhaseHeaders;
+        result.includePreActionsHeader = includePreActionsHeader;
+        result.includePostActionsHeader = includePostActionsHeader;
         return result;
     }
 
@@ -107,6 +110,42 @@ public final class CodeGenerateParametersBuilder {
      */
     public CodeGenerateParametersBuilder postActions(final String value) {
         postActions = value;
+        return this;
+    }
+
+    private boolean includePhaseHeaders;
+
+    /**
+     * Sets whether phase headers should be included.
+     * @param value The new value.
+     * @return A {@code GeneratorParametersBuilder} instance, never {@code null}.
+     */
+    public CodeGenerateParametersBuilder includePhaseHeaders(final boolean value) {
+        includePhaseHeaders = value;
+        return this;
+    }
+
+    private boolean includePreActionsHeader;
+
+    /**
+     * Sets whether phase headers should be included.
+     * @param value The new value.
+     * @return A {@code GeneratorParametersBuilder} instance, never {@code null}.
+     */
+    public CodeGenerateParametersBuilder includePreActionsHeader(final boolean value) {
+        includePreActionsHeader = value;
+        return this;
+    }
+
+    private boolean includePostActionsHeader;
+
+    /**
+     * Sets whether phase headers should be included.
+     * @param value The new value.
+     * @return A {@code GeneratorParametersBuilder} instance, never {@code null}.
+     */
+    public CodeGenerateParametersBuilder includePostActionsHeader(final boolean value) {
+        includePostActionsHeader = value;
         return this;
     }
 

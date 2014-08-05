@@ -21,6 +21,9 @@ public final class CodeGenerateParameters {
     boolean useRelativePath;
     String preActions;
     String postActions;
+    boolean includePhaseHeaders;
+    boolean includePreActionsHeader;
+    boolean includePostActionsHeader;
     //
     NumberFormat numberFormat = DecimalFormat.getInstance(Locale.US);
 

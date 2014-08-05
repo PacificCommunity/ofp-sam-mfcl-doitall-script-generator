@@ -48,36 +48,25 @@ public final class ProjectConfigPaneController extends FormValidator implements 
     private TextArea preActionsArea;
     @FXML
     private TextArea postActionsArea;
+    @FXML
+    private CheckBox includePhaseHeadersCheck;
+    @FXML
+    private CheckBox includePreActionsHeaderCheck;
+    @FXML
+    private CheckBox includePostActionsHeaderCheck;
 
     /**
-     * Initializes the controller class.
+     * Creates a new instance.
      */
-    @Override
-    public void initialize(final URL url, final ResourceBundle rb) {
-        // Populate model names list.
-        final String modelNames = prefs.get("model.executables", "mfclo, mfclo32, mfclo64, gmult"); // NOI18N.
-        final List<String> modelExecutables = Arrays.asList(modelNames.split(",")) // NOI18N.
-                .stream()
-                .map(value -> value.trim())
-                .collect(Collectors.toList());
-        modelExecutableCombo.getItems().setAll(modelExecutables);
-        modelExecutableCombo.valueProperty().addListener(invalidationListener);
-        //
-        modelRelativePathCheck.selectedProperty().addListener(invalidationListener);
-        //
-        frqFileField.textProperty().addListener(invalidationListener);
-        //
-        preActionsArea.textProperty().addListener(invalidationListener);
-        //
-        postActionsArea.textProperty().addListener(invalidationListener);
-        //
-        phaseNumberField.textProperty().addListener(invalidationListener);
-        requestValidateForm();
+    public ProjectConfigPaneController() {
     }
 
     @Override
     public void dispose() {
         try {
+            includePhaseHeaders.unbind();
+            includePreActionsHeader.unbind();
+            includePostActionsHeader.unbind();
             if (modelExecutableCombo != null) {
                 modelExecutableCombo.valueProperty().removeListener(invalidationListener);
                 modelExecutableCombo.getItems().clear();
@@ -106,6 +95,36 @@ public final class ProjectConfigPaneController extends FormValidator implements 
         } finally {
             super.dispose();
         }
+    }
+
+    /**
+     * Initializes the controller class.
+     */
+    @Override
+    public void initialize(final URL url, final ResourceBundle rb) {
+        // Populate model names list.
+        final String modelNames = prefs.get("model.executables", "mfclo, mfclo32, mfclo64, gmult"); // NOI18N.
+        final List<String> modelExecutables = Arrays.asList(modelNames.split(",")) // NOI18N.
+                .stream()
+                .map(value -> value.trim())
+                .collect(Collectors.toList());
+        modelExecutableCombo.getItems().setAll(modelExecutables);
+        modelExecutableCombo.valueProperty().addListener(invalidationListener);
+        //
+        modelRelativePathCheck.selectedProperty().addListener(invalidationListener);
+        //
+        frqFileField.textProperty().addListener(invalidationListener);
+        //
+        preActionsArea.textProperty().addListener(invalidationListener);
+        //
+        postActionsArea.textProperty().addListener(invalidationListener);
+        //
+        phaseNumberField.textProperty().addListener(invalidationListener);
+        //
+        includePhaseHeaders.bind(includePhaseHeadersCheck.selectedProperty());
+        includePreActionsHeader.bind(includePreActionsHeaderCheck.selectedProperty());
+        includePostActionsHeader.bind(includePostActionsHeaderCheck.selectedProperty());
+        requestValidateForm();
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -270,5 +289,47 @@ public final class ProjectConfigPaneController extends FormValidator implements 
 
     public final ReadOnlyStringProperty postActionsProperty() {
         return postActions.getReadOnlyProperty();
+    }
+
+    private final ReadOnlyBooleanWrapper includePhaseHeaders = new ReadOnlyBooleanWrapper(this, "includePhaseHeaders", true); // NOI18N.
+
+    public final boolean isIncludePhaseHeaders() {
+        return includePhaseHeaders.get();
+    }
+
+    protected final void setIncludePhaseHeaders(final boolean value) {
+        includePhaseHeaders.set(value);
+    }
+
+    public final ReadOnlyBooleanProperty includePhaseHeadersProperty() {
+        return includePhaseHeaders.getReadOnlyProperty();
+    }
+
+    private final ReadOnlyBooleanWrapper includePreActionsHeader = new ReadOnlyBooleanWrapper(this, "includePreActionsHeader", true); // NOI18N.
+
+    public final boolean isIncludePreActionsHeader() {
+        return includePreActionsHeader.get();
+    }
+
+    protected final void setIncludePreActionsHeader(final boolean value) {
+        includePreActionsHeader.set(value);
+    }
+
+    public final ReadOnlyBooleanProperty includePreActionsHeaderProperty() {
+        return includePreActionsHeader.getReadOnlyProperty();
+    }
+
+    private final ReadOnlyBooleanWrapper includePostActionsHeader = new ReadOnlyBooleanWrapper(this, "includePostActionsHeader", true); // NOI18N.
+
+    public final boolean isIncludePostActionsHeader() {
+        return includePostActionsHeader.get();
+    }
+
+    protected final void setIncludePostActionsHeader(final boolean value) {
+        includePostActionsHeader.set(value);
+    }
+
+    public final ReadOnlyBooleanProperty includePostActionsHeaderProperty() {
+        return includePostActionsHeader.getReadOnlyProperty();
     }
 }

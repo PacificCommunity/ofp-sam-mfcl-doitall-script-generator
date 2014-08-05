@@ -6,6 +6,7 @@
 package org.spc.ofp.mfcl.mfcldoit;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,14 +19,17 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import org.spc.ofp.mfcl.mfcldoit.control.FormError;
@@ -70,11 +74,14 @@ public final class MainUIController extends FormValidator implements Initializab
      */
     final CodeGenerateParametersBuilder codeGenerateBuilder = CodeGenerateParametersBuilder.create();
 
+    private ResourceBundle bundle;
+
     /**
      * Initializes the controller class.
      */
     @Override
-    public void initialize(final URL url, final ResourceBundle rb) {
+    public void initialize(final URL url, final ResourceBundle bundle) {
+        this.bundle = bundle;
         //
         VBox.setVgrow(codeEditor, Priority.ALWAYS);
         previewVBox.getChildren().add(codeEditor);
@@ -86,6 +93,9 @@ public final class MainUIController extends FormValidator implements Initializab
         projectConfigPaneController.preActionsProperty().addListener(invalidationListener);
         projectConfigPaneController.phaseNumberProperty().addListener(invalidationListener);
         projectConfigPaneController.postActionsProperty().addListener(invalidationListener);
+        projectConfigPaneController.includePhaseHeadersProperty().addListener(invalidationListener);
+        projectConfigPaneController.includePreActionsHeaderProperty().addListener(invalidationListener);
+        projectConfigPaneController.includePostActionsHeaderProperty().addListener(invalidationListener);
         //
         final String lastPath = prefs.get("last.file", ""); // NOI18N.
         pathField.setText(lastPath);
@@ -115,6 +125,9 @@ public final class MainUIController extends FormValidator implements Initializab
                 projectConfigPaneController.preActionsProperty().removeListener(invalidationListener);
                 projectConfigPaneController.phaseNumberProperty().removeListener(invalidationListener);
                 projectConfigPaneController.postActionsProperty().removeListener(invalidationListener);
+                projectConfigPaneController.includePhaseHeadersProperty().removeListener(invalidationListener);
+                projectConfigPaneController.includePreActionsHeaderProperty().removeListener(invalidationListener);
+                projectConfigPaneController.includePostActionsHeaderProperty().removeListener(invalidationListener);
                 projectConfigPaneController.dispose();
                 projectConfigPaneController = null;
             }
@@ -200,15 +213,27 @@ public final class MainUIController extends FormValidator implements Initializab
         final int newPhaseNumber = projectConfigPaneController.getPhaseNumber();
         // Add if needed.
         for (int phaseIndex = oldPhaseNumber; phaseIndex < newPhaseNumber; phaseIndex++) {
-            // @todo Localize!
-            final Tab tab = new Tab(String.format("Phase %d", phaseIndex + 1));
-            tabPane.getTabs().add(tab);
+            try {
+                // @todo Localize!
+                final URL fxmlURL = getClass().getResource("control/phase/PhaseEditor.fxml"); // NOI18N.
+                FXMLLoader fxmlLoader = new FXMLLoader(fxmlURL, bundle);
+                final Node phaseNode = fxmlLoader.load();
+                final Tab tabNode = new Tab(String.format("Phase %d", phaseIndex + 1));
+                tabNode.setContent(phaseNode);
+                tabPane.getTabs().add(tabNode);
+            } catch (IOException ex) {
+                Logger.getLogger(MainUIController.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+            }
         }
         // Remove if needed.
         for (int phaseIndex = newPhaseNumber; phaseIndex < oldPhaseNumber; phaseIndex++) {
             final Tab tab = tabPane.getTabs().remove(newPhaseNumber + phaseTabOffet);
         }
         codeGenerateBuilder.phaseNumber(newPhaseNumber);
+        //
+        codeGenerateBuilder.includePhaseHeaders(projectConfigPaneController.isIncludePhaseHeaders());
+        codeGenerateBuilder.includePreActionsHeader(projectConfigPaneController.isIncludePreActionsHeader());
+        codeGenerateBuilder.includePostActionsHeader(projectConfigPaneController.isIncludePostActionsHeader());
         //
         updateCodeInPreview();
         //

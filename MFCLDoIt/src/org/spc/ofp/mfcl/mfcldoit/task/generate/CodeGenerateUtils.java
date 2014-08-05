@@ -66,7 +66,11 @@ public final class CodeGenerateUtils {
             // Pre actions.
             final String preActions = parameters.preActions;
             if (preActions != null && !preActions.trim().isEmpty()) {
-                out.printf("# Actions to execute before the script.%s", ENDL); // NOI18N.
+                if (parameters.includePreActionsHeader) {
+                    out.printf("#------------------------------------------------------------------------------%s", ENDL); // NOI18N.
+                    out.printf("# Actions to execute before the script.%s", ENDL); // NOI18N.
+                    out.printf("#------------------------------------------------------------------------------%s", ENDL); // NOI18N.
+                }
                 out.print(preActions);
                 out.print(ENDL);
                 out.print(ENDL);
@@ -89,12 +93,14 @@ public final class CodeGenerateUtils {
                 }
                 final String phaseToken = String.format("PHASE%d", phaseIndex + 1);  // NOI18N.
                 // Phase header.
-                out.printf("#------------------------------------------------------------------------------%s", ENDL);
-                out.printf("# Phase %s%s", phaseIndex + 1, ENDL); // NOI18N.
-                out.printf("#------------------------------------------------------------------------------%s", ENDL);
+                if (parameters.includePhaseHeaders) {
+                    out.printf("#------------------------------------------------------------------------------%s", ENDL); // NOI18N.
+                    out.printf("# Phase %s%s", phaseIndex + 1, ENDL); // NOI18N.
+                    out.printf("#------------------------------------------------------------------------------%s", ENDL); // NOI18N.
+                }
                 // Start phase command line.
                 out.printf("if [ ! -f %02d.par ]; then%s", phaseIndex + 1, ENDL);
-                out.printf("  %s%s %s %02d.par %02d.par -file - <<%s%s", modelPrefix, modelExecutable, frqFile, phaseIndex,  phaseIndex + 1,  phaseToken, ENDL); // NOI18N.
+                out.printf("  %s%s %s %02d.par %02d.par -file - <<%s%s", modelPrefix, modelExecutable, frqFile, phaseIndex, phaseIndex + 1, phaseToken, ENDL); // NOI18N.
                 // Phase parameters.
                 // End phase command line.
                 out.printf("%s%s", phaseToken, ENDL); // NOI18N.
@@ -112,7 +118,11 @@ public final class CodeGenerateUtils {
             // Pre actions.
             final String postActions = parameters.postActions;
             if (postActions != null && !postActions.trim().isEmpty()) {
-                out.printf("# Actions to execute after the script.%s", ENDL); // NOI18N.
+                if (parameters.includePostActionsHeader) {
+                    out.printf("#------------------------------------------------------------------------------%s", ENDL); // NOI18N.
+                    out.printf("# Actions to execute after the script.%s", ENDL); // NOI18N.
+                    out.printf("#------------------------------------------------------------------------------%s", ENDL); // NOI18N.
+                }
                 out.print(postActions);
                 out.print(ENDL);
                 out.print(ENDL);
