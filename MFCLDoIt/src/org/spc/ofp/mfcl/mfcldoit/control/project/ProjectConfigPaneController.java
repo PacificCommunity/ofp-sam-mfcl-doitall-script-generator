@@ -22,6 +22,7 @@ import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
@@ -43,11 +44,19 @@ public final class ProjectConfigPaneController extends FormValidator implements 
     @FXML
     private TextField frqFileField;
     @FXML
+    private Button frqFileBrowseButton;
+    @FXML
+    private TextField iniFileField;
+    @FXML
+    private Button iniFileBrowseButton;
+    @FXML
     private TextField phaseNumberField;
     @FXML
     private TextArea preActionsArea;
     @FXML
     private TextArea postActionsArea;
+    @FXML
+    private CheckBox makeParCheck;
     @FXML
     private CheckBox includePhaseHeadersCheck;
     @FXML
@@ -67,6 +76,7 @@ public final class ProjectConfigPaneController extends FormValidator implements 
             includePhaseHeaders.unbind();
             includePreActionsHeader.unbind();
             includePostActionsHeader.unbind();
+            makePar.unbind();
             if (modelExecutableCombo != null) {
                 modelExecutableCombo.valueProperty().removeListener(invalidationListener);
                 modelExecutableCombo.getItems().clear();
@@ -79,6 +89,14 @@ public final class ProjectConfigPaneController extends FormValidator implements 
             if (frqFileField != null) {
                 frqFileField.textProperty().removeListener(invalidationListener);
                 frqFileField = null;
+            }
+            if (iniFileField != null) {
+                iniFileField.disableProperty().unbind();
+                iniFileField = null;
+            }
+            if (iniFileBrowseButton != null) {
+                iniFileBrowseButton.disableProperty().unbind();
+                iniFileBrowseButton = null;
             }
             if (preActionsArea != null) {
                 preActionsArea.textProperty().removeListener(invalidationListener);
@@ -115,6 +133,11 @@ public final class ProjectConfigPaneController extends FormValidator implements 
         //
         frqFileField.textProperty().addListener(invalidationListener);
         //
+        iniFileField.textProperty().addListener(invalidationListener);
+        iniFileField.disableProperty().bind(makePar.not());
+        //
+        iniFileBrowseButton.disableProperty().bind(makePar.not());
+        //
         preActionsArea.textProperty().addListener(invalidationListener);
         //
         postActionsArea.textProperty().addListener(invalidationListener);
@@ -124,6 +147,7 @@ public final class ProjectConfigPaneController extends FormValidator implements 
         includePhaseHeaders.bind(includePhaseHeadersCheck.selectedProperty());
         includePreActionsHeader.bind(includePreActionsHeaderCheck.selectedProperty());
         includePostActionsHeader.bind(includePostActionsHeaderCheck.selectedProperty());
+        makePar.bind(makeParCheck.selectedProperty());
         requestValidateForm();
     }
 
@@ -173,6 +197,18 @@ public final class ProjectConfigPaneController extends FormValidator implements 
             prefs.put("frq.file", frqFile); // NOI18N.
         }
         setFRQFile(frqFile);
+        // INI file.
+        final boolean makePar = isMakePar();
+        iniFileField.getStyleClass().remove(ERROR_STYLE_CLASSS);
+        final String iniFile = iniFileField.getText();
+        if (makePar && (iniFile == null || iniFile.trim().isEmpty())) {
+            // @todo Localize!
+            allErrors.add(new FormError("INI file cannot be empty.", iniFileField));
+            iniFileField.getStyleClass().add(ERROR_STYLE_CLASSS);
+        } else {
+            prefs.put("ini.file", frqFile); // NOI18N.
+        }
+        setINIFile(iniFile);
         // Phase number.
         phaseNumberField.getStyleClass().remove(ERROR_STYLE_CLASSS);
         int phaseNumber = 0;
@@ -204,6 +240,10 @@ public final class ProjectConfigPaneController extends FormValidator implements 
     ////////////////////////////////////////////////////////////////////////////
     @FXML
     private void handleFRQBrowseButton(final ActionEvent actionEvent) {
+    }
+
+    @FXML
+    private void handleINIBrowseButton(final ActionEvent actionEvent) {
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -261,6 +301,20 @@ public final class ProjectConfigPaneController extends FormValidator implements 
 
     public final ReadOnlyStringProperty frqFileProperty() {
         return frqFile.getReadOnlyProperty();
+    }
+
+    private final ReadOnlyStringWrapper iniFile = new ReadOnlyStringWrapper(this, "iniFile"); // NOI18N.
+
+    public final String getINIFile() {
+        return iniFile.get();
+    }
+
+    protected final void setINIFile(final String value) {
+        iniFile.set(value);
+    }
+
+    public final ReadOnlyStringProperty iniFileProperty() {
+        return iniFile.getReadOnlyProperty();
     }
 
     private final ReadOnlyStringWrapper preActions = new ReadOnlyStringWrapper(this, "preActions"); // NOI18N.
@@ -331,5 +385,19 @@ public final class ProjectConfigPaneController extends FormValidator implements 
 
     public final ReadOnlyBooleanProperty includePostActionsHeaderProperty() {
         return includePostActionsHeader.getReadOnlyProperty();
+    }
+
+    private final ReadOnlyBooleanWrapper makePar = new ReadOnlyBooleanWrapper(this, "makePar", true); // NOI18N.
+
+    public final boolean isMakePar() {
+        return makePar.get();
+    }
+
+    protected final void setMakePar(final boolean value) {
+        makePar.set(value);
+    }
+
+    public final ReadOnlyBooleanProperty makeParProperty() {
+        return makePar.getReadOnlyProperty();
     }
 }

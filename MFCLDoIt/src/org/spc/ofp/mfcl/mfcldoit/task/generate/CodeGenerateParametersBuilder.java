@@ -36,12 +36,14 @@ public final class CodeGenerateParametersBuilder {
         result.phaseNumber = phaseNumber;
         result.modelExecutable = modelExecutable;
         result.frqFile = frqFile;
+        result.iniFile = iniFile;
         result.useRelativePath = useRelativePath;
         result.preActions = preActions;
         result.postActions = postActions;
         result.includePhaseHeaders = includePhaseHeaders;
         result.includePreActionsHeader = includePreActionsHeader;
         result.includePostActionsHeader = includePostActionsHeader;
+        result.makePar = makePar;
         return result;
     }
 
@@ -72,8 +74,25 @@ public final class CodeGenerateParametersBuilder {
 
     private String frqFile;
 
+    /**
+     * Sets the name of the FRQ file.
+     * @param value The new value.
+     * @return A {@code GeneratorParametersBuilder} instance, never {@code null}.
+     */
     public CodeGenerateParametersBuilder frqFile(final String value) {
         frqFile = value;
+        return this;
+    }
+
+    private String iniFile;
+
+    /**
+     * Sets the name of the INI file (for make par).
+     * @param value The new value.
+     * @return A {@code GeneratorParametersBuilder} instance, never {@code null}.
+     */
+    public CodeGenerateParametersBuilder iniFile(final String value) {
+        iniFile = value;
         return this;
     }
 
@@ -149,4 +168,15 @@ public final class CodeGenerateParametersBuilder {
         return this;
     }
 
+    private boolean makePar;
+
+    /**
+     * Sets whether we should run the make par phase.
+     * @param value The new value.
+     * @return A {@code GeneratorParametersBuilder} instance, never {@code null}.
+     */
+    public CodeGenerateParametersBuilder makePar(final boolean value) {
+        makePar = value;
+        return this;
+    }
 }

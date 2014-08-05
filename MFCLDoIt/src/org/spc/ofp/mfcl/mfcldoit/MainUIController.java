@@ -90,12 +90,14 @@ public final class MainUIController extends FormValidator implements Initializab
         projectConfigPaneController.modelExecutableProperty().addListener(invalidationListener);
         projectConfigPaneController.useRelativePathProperty().addListener(invalidationListener);
         projectConfigPaneController.frqFileProperty().addListener(invalidationListener);
+        projectConfigPaneController.iniFileProperty().addListener(invalidationListener);
         projectConfigPaneController.preActionsProperty().addListener(invalidationListener);
         projectConfigPaneController.phaseNumberProperty().addListener(invalidationListener);
         projectConfigPaneController.postActionsProperty().addListener(invalidationListener);
         projectConfigPaneController.includePhaseHeadersProperty().addListener(invalidationListener);
         projectConfigPaneController.includePreActionsHeaderProperty().addListener(invalidationListener);
         projectConfigPaneController.includePostActionsHeaderProperty().addListener(invalidationListener);
+        projectConfigPaneController.makeParProperty().addListener(invalidationListener);
         //
         final String lastPath = prefs.get("last.file", ""); // NOI18N.
         pathField.setText(lastPath);
@@ -122,12 +124,14 @@ public final class MainUIController extends FormValidator implements Initializab
                 projectConfigPaneController.modelExecutableProperty().removeListener(invalidationListener);
                 projectConfigPaneController.useRelativePathProperty().removeListener(invalidationListener);
                 projectConfigPaneController.frqFileProperty().removeListener(invalidationListener);
+                projectConfigPaneController.iniFileProperty().removeListener(invalidationListener);
                 projectConfigPaneController.preActionsProperty().removeListener(invalidationListener);
                 projectConfigPaneController.phaseNumberProperty().removeListener(invalidationListener);
                 projectConfigPaneController.postActionsProperty().removeListener(invalidationListener);
                 projectConfigPaneController.includePhaseHeadersProperty().removeListener(invalidationListener);
                 projectConfigPaneController.includePreActionsHeaderProperty().removeListener(invalidationListener);
                 projectConfigPaneController.includePostActionsHeaderProperty().removeListener(invalidationListener);
+                projectConfigPaneController.makeParProperty().removeListener(invalidationListener);
                 projectConfigPaneController.dispose();
                 projectConfigPaneController = null;
             }
@@ -201,12 +205,19 @@ public final class MainUIController extends FormValidator implements Initializab
         // FRQ file.
         final String frqFile = projectConfigPaneController.getFRQFile();
         codeGenerateBuilder.frqFile(frqFile);
+        // Make par.
+        codeGenerateBuilder.makePar(projectConfigPaneController.isMakePar());
+        // INI file.
+        final String iniFile = projectConfigPaneController.getINIFile();
+        codeGenerateBuilder.iniFile(iniFile);
         // Pre-action.
         final String preActions = projectConfigPaneController.getPreActions();
         codeGenerateBuilder.preActions(preActions);
+        codeGenerateBuilder.includePreActionsHeader(projectConfigPaneController.isIncludePreActionsHeader());
         // Post-action.
         final String postActions = projectConfigPaneController.getPostActions();
         codeGenerateBuilder.postActions(postActions);
+        codeGenerateBuilder.includePostActionsHeader(projectConfigPaneController.isIncludePostActionsHeader());
         // Phase tabs.
         final int phaseTabOffet = 1;
         final int oldPhaseNumber = tabPane.getTabs().size() - phaseTabOffet;
@@ -230,10 +241,7 @@ public final class MainUIController extends FormValidator implements Initializab
             final Tab tab = tabPane.getTabs().remove(newPhaseNumber + phaseTabOffet);
         }
         codeGenerateBuilder.phaseNumber(newPhaseNumber);
-        //
         codeGenerateBuilder.includePhaseHeaders(projectConfigPaneController.isIncludePhaseHeaders());
-        codeGenerateBuilder.includePreActionsHeader(projectConfigPaneController.isIncludePreActionsHeader());
-        codeGenerateBuilder.includePostActionsHeader(projectConfigPaneController.isIncludePostActionsHeader());
         //
         updateCodeInPreview();
         //

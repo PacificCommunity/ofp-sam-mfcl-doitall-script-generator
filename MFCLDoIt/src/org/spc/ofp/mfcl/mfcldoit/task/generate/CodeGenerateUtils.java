@@ -28,7 +28,7 @@ public final class CodeGenerateUtils {
      * @return A {@code long}.
      */
     public static long stepNumbers(final CodeGenerateParameters parameters) {
-        return parameters.phaseNumber + 3;
+        return parameters.phaseNumber + 4;
     }
 
     /**
@@ -65,7 +65,7 @@ public final class CodeGenerateUtils {
             ////////////////////////////////////////////////////////////////////
             // Pre actions.
             final String preActions = parameters.preActions;
-            if (preActions != null && !preActions.trim().isEmpty()) {
+            if (!isEmpty(preActions)) {
                 if (parameters.includePreActionsHeader) {
                     out.printf("#------------------------------------------------------------------------------%s", ENDL); // NOI18N.
                     out.printf("# Actions to execute before the script.%s", ENDL); // NOI18N.
@@ -81,32 +81,51 @@ public final class CodeGenerateUtils {
             if (cancelledChecker != null && cancelledChecker.isCancelled()) {
                 return null;
             }
-            ////////////////////////////////////////////////////////////////////
-            // Phases.
             final String modelExecutable = parameters.modelExecutable;
             final String frqFile = parameters.frqFile;
+            final String iniFile = parameters.iniFile;
             final String modelPrefix = parameters.useRelativePath ? "./" : "";
+            ////////////////////////////////////////////////////////////////////
+            // Pre-phase.
+            if (!isEmpty(modelExecutable) && !isEmpty(frqFile) && !isEmpty(iniFile) && parameters.makePar) {
+                if (parameters.includePhaseHeaders) {
+                    out.printf("#------------------------------------------------------------------------------%s", ENDL); // NOI18N.
+                    out.printf("# Phase %s%s", 0, ENDL); // NOI18N.
+                    out.printf("#------------------------------------------------------------------------------%s", ENDL); // NOI18N.
+                }
+                out.printf("%s%s %s %s 00.par -makepar%s", modelPrefix, modelExecutable, frqFile, iniFile, ENDL);
+                out.print(ENDL);
+            }
+            if (progressUpdater != null) {
+                progressUpdater.updateProgress();
+            }
+            if (cancelledChecker != null && cancelledChecker.isCancelled()) {
+                return null;
+            }
+            ////////////////////////////////////////////////////////////////////
+            // Phases.
             final int phaseNumber = parameters.phaseNumber;
             for (int phaseIndex = 0; phaseIndex < phaseNumber; phaseIndex++) {
                 if (cancelledChecker != null && cancelledChecker.isCancelled()) {
                     return null;
                 }
-                final String phaseToken = String.format("PHASE%d", phaseIndex + 1);  // NOI18N.
-                // Phase header.
-                if (parameters.includePhaseHeaders) {
-                    out.printf("#------------------------------------------------------------------------------%s", ENDL); // NOI18N.
-                    out.printf("# Phase %s%s", phaseIndex + 1, ENDL); // NOI18N.
-                    out.printf("#------------------------------------------------------------------------------%s", ENDL); // NOI18N.
+                if (!isEmpty(modelExecutable) && !isEmpty(frqFile)) {
+                    final String phaseToken = String.format("PHASE%d", phaseIndex + 1);  // NOI18N.
+                    // Phase header.
+                    if (parameters.includePhaseHeaders) {
+                        out.printf("#------------------------------------------------------------------------------%s", ENDL); // NOI18N.
+                        out.printf("# Phase %s%s", phaseIndex + 1, ENDL); // NOI18N.
+                        out.printf("#------------------------------------------------------------------------------%s", ENDL); // NOI18N.
+                    }
+                    // Start phase command line.
+                    out.printf("if [ ! -f %02d.par ]; then%s", phaseIndex + 1, ENDL);
+                    out.printf("  %s%s %s %02d.par %02d.par -file - <<%s%s", modelPrefix, modelExecutable, frqFile, phaseIndex, phaseIndex + 1, phaseToken, ENDL); // NOI18N.
+                    // Phase parameters.
+                    // End phase command line.
+                    out.printf("%s%s", phaseToken, ENDL); // NOI18N.
+                    out.printf("fi%s", ENDL); // NOI18N.
+                    out.print(ENDL);
                 }
-                // Start phase command line.
-                out.printf("if [ ! -f %02d.par ]; then%s", phaseIndex + 1, ENDL);
-                out.printf("  %s%s %s %02d.par %02d.par -file - <<%s%s", modelPrefix, modelExecutable, frqFile, phaseIndex, phaseIndex + 1, phaseToken, ENDL); // NOI18N.
-                // Phase parameters.
-                // End phase command line.
-                out.printf("%s%s", phaseToken, ENDL); // NOI18N.
-                out.printf("fi%s", ENDL); // NOI18N.
-                out.print(ENDL);
-                //
                 if (progressUpdater != null) {
                     progressUpdater.updateProgress();
                 }
@@ -117,7 +136,7 @@ public final class CodeGenerateUtils {
             ////////////////////////////////////////////////////////////////////
             // Pre actions.
             final String postActions = parameters.postActions;
-            if (postActions != null && !postActions.trim().isEmpty()) {
+            if (!isEmpty(postActions)) {
                 if (parameters.includePostActionsHeader) {
                     out.printf("#------------------------------------------------------------------------------%s", ENDL); // NOI18N.
                     out.printf("# Actions to execute after the script.%s", ENDL); // NOI18N.
@@ -135,6 +154,9 @@ public final class CodeGenerateUtils {
             }
         }
         return result.toString();
+    }
 
+    private static boolean isEmpty(final String value) {
+        return value == null || value.trim().isEmpty();
     }
 }

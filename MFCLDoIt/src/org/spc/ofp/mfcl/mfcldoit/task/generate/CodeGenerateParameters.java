@@ -18,12 +18,14 @@ public final class CodeGenerateParameters {
     int phaseNumber;
     String modelExecutable;
     String frqFile;
+    String iniFile;
     boolean useRelativePath;
     String preActions;
     String postActions;
     boolean includePhaseHeaders;
     boolean includePreActionsHeader;
     boolean includePostActionsHeader;
+    boolean makePar;
     //
     NumberFormat numberFormat = DecimalFormat.getInstance(Locale.US);
 
