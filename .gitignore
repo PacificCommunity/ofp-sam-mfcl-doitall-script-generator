@@ -14,3 +14,8 @@ hs_err_pid*
 /MFCLDoIt/dist/
 /MFCLDoIt/nbproject/private/
 /MFCLDoIt-Preloader/nbproject/private
+/MFCLDoIt-Preloader/dist/
+/MFCLDoIt-Preloader/build/
+/MFCLDoIt-tests/nbproject/private/
+/MFCLDoIt-tests/build/
+/MFCLDoIt-tests/dist/
