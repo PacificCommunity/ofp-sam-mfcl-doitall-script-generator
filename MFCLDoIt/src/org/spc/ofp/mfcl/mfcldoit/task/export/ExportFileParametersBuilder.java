@@ -7,8 +7,8 @@ package org.spc.ofp.mfcl.mfcldoit.task.export;
 
 import java.io.File;
 import java.nio.charset.Charset;
-import org.spc.ofp.mfcl.mfcldoit.task.generate.CodeGenerateParameters;
-import org.spc.ofp.mfcl.mfcldoit.task.generate.CodeGenerateParametersBuilder;
+import org.spc.ofp.mfcl.mfcldoit.task.generate.ProjectParameters;
+import org.spc.ofp.mfcl.mfcldoit.task.generate.ProjectParametersBuilder;
 
 /**
  * Builder for parameter object.
@@ -31,7 +31,7 @@ public final class ExportFileParametersBuilder {
         return new ExportFileParametersBuilder()
                 .folder(null)
                 .filename(null)
-                .codeGenerateParameters(null);
+                .projectParameters(null);
     }
 
     /**
@@ -42,7 +42,7 @@ public final class ExportFileParametersBuilder {
         final ExportFileParameters result = new ExportFileParameters();
         result.folder = folder;
         result.filename = filename;
-        result.codeGenerateParameters = codeGenerateParameters;
+        result.projectParameters = projectParameters;
         result.encoding = encoding;
         return result;
     }
@@ -72,15 +72,15 @@ public final class ExportFileParametersBuilder {
         return this;
     }
 
-    private CodeGenerateParameters codeGenerateParameters;
+    private ProjectParameters projectParameters;
 
     /**
-     * Sets the code generator
+     * Sets the project parameters.
      * @param value The new value.
      * @return A {@code GeneratorParametersBuilder} instance, never {@code null}.
      */
-    public ExportFileParametersBuilder codeGenerateParameters(final CodeGenerateParameters value) {
-        codeGenerateParameters = (value == null) ? CodeGenerateParametersBuilder.create().build() : value;
+    public ExportFileParametersBuilder projectParameters(final ProjectParameters value) {
+        projectParameters = (value == null) ? ProjectParametersBuilder.create().build() : value;
         return this;
     }
 

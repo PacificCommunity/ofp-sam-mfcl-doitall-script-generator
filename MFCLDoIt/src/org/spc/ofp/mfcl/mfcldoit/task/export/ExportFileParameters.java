@@ -7,7 +7,7 @@ package org.spc.ofp.mfcl.mfcldoit.task.export;
 
 import java.io.File;
 import java.nio.charset.Charset;
-import org.spc.ofp.mfcl.mfcldoit.task.generate.CodeGenerateParameters;
+import org.spc.ofp.mfcl.mfcldoit.task.generate.ProjectParameters;
 
 /**
  * Parameters used when exporting to file.
@@ -18,7 +18,7 @@ public final class ExportFileParameters {
 
     File folder;
     String filename;
-    CodeGenerateParameters codeGenerateParameters;
+    ProjectParameters projectParameters;
     Charset encoding = DEFAULT_ENCODING;
 
     /**

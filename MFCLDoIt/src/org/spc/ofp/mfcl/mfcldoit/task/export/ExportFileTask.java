@@ -45,7 +45,7 @@ public final class ExportFileTask extends Task<File> {
 
     @Override
     protected File call() throws Exception {
-        final long totalProgress = CodeGenerateUtils.stepNumbers(parameters.codeGenerateParameters) + 3;
+        final long totalProgress = CodeGenerateUtils.stepNumbers(parameters.projectParameters) + 3;
         currentProgress = 0;
         // Check folder.
         final File folder = parameters.folder;
@@ -68,7 +68,7 @@ public final class ExportFileTask extends Task<File> {
             return null;
         }
         // Generate.
-        final String text = CodeGenerateUtils.generate(parameters.codeGenerateParameters,
+        final String text = CodeGenerateUtils.generate(parameters.projectParameters,
                 () -> updateProgress(++currentProgress, totalProgress),
                 this::updateMessage, this::isCancelled);
         updateProgress(++currentProgress, totalProgress);

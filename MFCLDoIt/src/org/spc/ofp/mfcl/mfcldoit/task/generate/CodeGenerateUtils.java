@@ -27,7 +27,7 @@ public final class CodeGenerateUtils {
      * @param parameters The parameters.
      * @return A {@code long}.
      */
-    public static long stepNumbers(final CodeGenerateParameters parameters) {
+    public static long stepNumbers(final ProjectParameters parameters) {
         return parameters.phaseNumber + 4;
     }
 
@@ -36,7 +36,7 @@ public final class CodeGenerateUtils {
      * @param parameters The parameters.
      * @return The script.
      */
-    public static String generate(final CodeGenerateParameters parameters) {
+    public static String generate(final ProjectParameters parameters) {
         return generate(parameters, null, null, null);
     }
 
@@ -48,7 +48,7 @@ public final class CodeGenerateUtils {
      * @param cancelledChecker Check if task has been canceled, can be {@code null}.
      * @return The script.
      */
-    public static String generate(final CodeGenerateParameters parameters, final ProgressUpdater progressUpdater, final MessageUpdater messageUpdater, final CancelledChecker cancelledChecker) {
+    public static String generate(final ProjectParameters parameters, final ProgressUpdater progressUpdater, final MessageUpdater messageUpdater, final CancelledChecker cancelledChecker) {
         // Generate.
         final StringWriter result = new StringWriter();
         try (final PrintWriter out = new PrintWriter(result)) {

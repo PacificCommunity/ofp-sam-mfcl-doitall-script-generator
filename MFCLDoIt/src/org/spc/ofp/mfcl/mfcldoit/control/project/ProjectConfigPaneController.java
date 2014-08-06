@@ -13,12 +13,8 @@ import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import javafx.beans.InvalidationListener;
-import javafx.beans.property.ReadOnlyBooleanProperty;
-import javafx.beans.property.ReadOnlyBooleanWrapper;
-import javafx.beans.property.ReadOnlyIntegerProperty;
-import javafx.beans.property.ReadOnlyStringProperty;
-import javafx.beans.property.ReadOnlyIntegerWrapper;
-import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -30,6 +26,8 @@ import javafx.scene.control.TextField;
 import org.spc.ofp.mfcl.mfcldoit.Disposable;
 import org.spc.ofp.mfcl.mfcldoit.control.FormError;
 import org.spc.ofp.mfcl.mfcldoit.control.FormValidator;
+import org.spc.ofp.mfcl.mfcldoit.task.generate.ProjectParameters;
+import org.spc.ofp.mfcl.mfcldoit.task.generate.ProjectParametersBuilder;
 
 /**
  * FXML Controller class
@@ -73,10 +71,6 @@ public final class ProjectConfigPaneController extends FormValidator implements 
     @Override
     public void dispose() {
         try {
-            includePhaseHeaders.unbind();
-            includePreActionsHeader.unbind();
-            includePostActionsHeader.unbind();
-            makePar.unbind();
             if (modelExecutableCombo != null) {
                 modelExecutableCombo.valueProperty().removeListener(invalidationListener);
                 modelExecutableCombo.getItems().clear();
@@ -110,16 +104,32 @@ public final class ProjectConfigPaneController extends FormValidator implements 
                 phaseNumberField.textProperty().removeListener(invalidationListener);
                 phaseNumberField = null;
             }
+            if (includePhaseHeadersCheck != null) {
+                includePhaseHeadersCheck.selectedProperty().removeListener(invalidationListener);
+                includePhaseHeadersCheck = null;
+            }
+            if (includePreActionsHeaderCheck != null) {
+                includePreActionsHeaderCheck.selectedProperty().removeListener(invalidationListener);
+                includePreActionsHeaderCheck = null;
+            }
+            if (includePostActionsHeaderCheck != null) {
+                includePostActionsHeaderCheck.selectedProperty().removeListener(invalidationListener);
+                includePostActionsHeaderCheck = null;
+            }
+            if (makeParCheck != null) {
+                makeParCheck.selectedProperty().removeListener(invalidationListener);
+                makeParCheck = null;
+            }
         } finally {
             super.dispose();
         }
     }
 
-    /**
-     * Initializes the controller class.
-     */
+    private ResourceBundle bundle;
+
     @Override
-    public void initialize(final URL url, final ResourceBundle rb) {
+    public void initialize(final URL url, final ResourceBundle bundle) {
+        this.bundle = bundle;
         // Populate model names list.
         final String modelNames = prefs.get("model.executables", "mfclo, mfclo32, mfclo64, gmult"); // NOI18N.
         final List<String> modelExecutables = Arrays.asList(modelNames.split(",")) // NOI18N.
@@ -134,9 +144,9 @@ public final class ProjectConfigPaneController extends FormValidator implements 
         frqFileField.textProperty().addListener(invalidationListener);
         //
         iniFileField.textProperty().addListener(invalidationListener);
-        iniFileField.disableProperty().bind(makePar.not());
+        iniFileField.disableProperty().bind(makeParCheck.selectedProperty().not());
         //
-        iniFileBrowseButton.disableProperty().bind(makePar.not());
+        iniFileBrowseButton.disableProperty().bind(makeParCheck.selectedProperty().not());
         //
         preActionsArea.textProperty().addListener(invalidationListener);
         //
@@ -144,11 +154,16 @@ public final class ProjectConfigPaneController extends FormValidator implements 
         //
         phaseNumberField.textProperty().addListener(invalidationListener);
         //
-        includePhaseHeaders.bind(includePhaseHeadersCheck.selectedProperty());
-        includePreActionsHeader.bind(includePreActionsHeaderCheck.selectedProperty());
-        includePostActionsHeader.bind(includePostActionsHeaderCheck.selectedProperty());
-        makePar.bind(makeParCheck.selectedProperty());
-        requestValidateForm();
+        includePhaseHeadersCheck.selectedProperty().addListener(invalidationListener);
+        //
+        includePreActionsHeaderCheck.selectedProperty().addListener(invalidationListener);
+        //
+        includePostActionsHeaderCheck.selectedProperty().addListener(invalidationListener);
+        //
+        makeParCheck.selectedProperty().addListener(invalidationListener);
+        // This will initialize the very first parameter object. 
+        // After this call, the parameter object will never be null.
+        validateForm();
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -159,6 +174,10 @@ public final class ProjectConfigPaneController extends FormValidator implements 
 
     ////////////////////////////////////////////////////////////////////////////
     private final Preferences prefs = Preferences.userNodeForPackage(getClass());
+    /**
+     * The builder used to generate the parameters.
+     */
+    final ProjectParametersBuilder parametersBuilder = ProjectParametersBuilder.create();
 
     @Override
     protected void impl_validateForm() {
@@ -168,11 +187,10 @@ public final class ProjectConfigPaneController extends FormValidator implements 
         String modelName = modelExecutableCombo.getValue();
         modelName = (modelName != null) ? modelName.trim() : null;
         if (modelName == null || modelName.isEmpty()) {
-            // @todo Localize!
-            allErrors.add(new FormError("Model name cannot be empty.", modelExecutableCombo));
+            allErrors.add(new FormError(bundle.getString("ERROR_MODEL_NAME_EMPTY_MESSAGE"), modelExecutableCombo)); // NOI18N.
             modelExecutableCombo.getStyleClass().add(ERROR_STYLE_CLASSS);
         } else {
-            setModelExecutable(modelName);
+            parametersBuilder.modelExecutable(modelName);
             // If not already in the list, add it.
             if (!modelExecutableCombo.getItems().contains(modelName)) {
                 modelExecutableCombo.getItems().add(modelName);
@@ -185,30 +203,29 @@ public final class ProjectConfigPaneController extends FormValidator implements 
         }
         // Relative path.
         final boolean userRelativePath = modelRelativePathCheck.isSelected();
-        setUseRelativePath(userRelativePath);
+        parametersBuilder.useRelativePath(userRelativePath);
         // FRQ file.
         frqFileField.getStyleClass().remove(ERROR_STYLE_CLASSS);
         final String frqFile = frqFileField.getText();
         if (frqFile == null || frqFile.trim().isEmpty()) {
-            // @todo Localize!
-            allErrors.add(new FormError("FRQ file cannot be empty.", frqFileField));
+            allErrors.add(new FormError(bundle.getString("ERROR_FRQ_FILE_EMPTY_MESSAGE"), frqFileField)); // NOI18N.
             frqFileField.getStyleClass().add(ERROR_STYLE_CLASSS);
         } else {
             prefs.put("frq.file", frqFile); // NOI18N.
         }
-        setFRQFile(frqFile);
+        parametersBuilder.frqFile(frqFile);
         // INI file.
-        final boolean makePar = isMakePar();
+        final boolean makePar = makeParCheck.isSelected();
+        parametersBuilder.makePar(makePar);
         iniFileField.getStyleClass().remove(ERROR_STYLE_CLASSS);
         final String iniFile = iniFileField.getText();
         if (makePar && (iniFile == null || iniFile.trim().isEmpty())) {
-            // @todo Localize!
-            allErrors.add(new FormError("INI file cannot be empty.", iniFileField));
+            allErrors.add(new FormError(bundle.getString("ERROR_INI_FILE_EMPTY_MESSAGE"), iniFileField)); // NOI18N.
             iniFileField.getStyleClass().add(ERROR_STYLE_CLASSS);
         } else {
             prefs.put("ini.file", frqFile); // NOI18N.
         }
-        setINIFile(iniFile);
+        parametersBuilder.iniFile(iniFile);
         // Phase number.
         phaseNumberField.getStyleClass().remove(ERROR_STYLE_CLASSS);
         int phaseNumber = 0;
@@ -216,23 +233,29 @@ public final class ProjectConfigPaneController extends FormValidator implements 
             final String text = phaseNumberField.getText();
             phaseNumber = Integer.parseInt(text);
             if (phaseNumber <= 0) {
-                // @todo Localize!
-                allErrors.add(new FormError("Phase number must be an interger > 0.", modelExecutableCombo));
+                allErrors.add(new FormError(bundle.getString("ERROR_PHASE_NUMBER_INVALID_MESSAGE"), modelExecutableCombo)); // NOI18N.
                 phaseNumberField.getStyleClass().add(ERROR_STYLE_CLASSS);
             }
         } catch (Exception ex) {
             // @todo Log this.
-            // @todo Localize!
-            allErrors.add(new FormError("Phase number must be an interger number.", modelExecutableCombo));
+            allErrors.add(new FormError(bundle.getString("ERROR_PHASE_NUMBER_NOT_AN_INT_MESSAGE"), modelExecutableCombo)); // NOI18N.
             phaseNumberField.getStyleClass().add(ERROR_STYLE_CLASSS);
         }
-        setPhaseNumber(phaseNumber);
+        parametersBuilder.phaseNumber(phaseNumber);
+        final boolean includePhaseHeaders = includePhaseHeadersCheck.isSelected();
+        parametersBuilder.includePhaseHeaders(includePhaseHeaders);
         // Pre-actions.
         final String preActions = preActionsArea.getText();
-        setPreActions(preActions);
+        parametersBuilder.preActions(preActions);
+        final boolean includePreActionsHeader = includePreActionsHeaderCheck.isSelected();
+        parametersBuilder.includePreActionsHeader(includePreActionsHeader);
         // Post-actions.
         final String postActions = postActionsArea.getText();
-        setPostActions(postActions);
+        parametersBuilder.postActions(postActions);
+        final boolean includePostActionsHeader = includePostActionsHeaderCheck.isSelected();
+        parametersBuilder.includePostActionsHeader(includePostActionsHeader);
+        //
+        parameters.set(parametersBuilder.build());
         //
         errors.setAll(allErrors);
     }
@@ -247,157 +270,16 @@ public final class ProjectConfigPaneController extends FormValidator implements 
     }
 
     ////////////////////////////////////////////////////////////////////////////
-    private final ReadOnlyIntegerWrapper phaseNumber = new ReadOnlyIntegerWrapper(this, "phaseNumber"); // NOI18N.
+    /**
+     * The parameter object for this config pane.
+     */
+    private final ReadOnlyObjectWrapper<ProjectParameters> parameters = new ReadOnlyObjectWrapper(this, "parameters"); // NOI18N.
 
-    public final int getPhaseNumber() {
-        return phaseNumber.get();
+    public final ProjectParameters getParameters() {
+        return parameters.get();
     }
 
-    protected final void setPhaseNumber(final int value) {
-        phaseNumber.set(Math.max(0, value));
-    }
-
-    public final ReadOnlyIntegerProperty phaseNumberProperty() {
-        return phaseNumber.getReadOnlyProperty();
-    }
-
-    private final ReadOnlyBooleanWrapper useRelativePath = new ReadOnlyBooleanWrapper(this, "useRelativePath"); // NOI18N.
-
-    public final boolean isUseRelativePath() {
-        return useRelativePath.get();
-    }
-
-    protected final void setUseRelativePath(final boolean value) {
-        useRelativePath.set(value);
-    }
-
-    public final ReadOnlyBooleanProperty useRelativePathProperty() {
-        return useRelativePath.getReadOnlyProperty();
-    }
-
-    private final ReadOnlyStringWrapper modelExecutable = new ReadOnlyStringWrapper(this, "modelExecutable"); // NOI18N.
-
-    public final String getModelExecutable() {
-        return modelExecutable.get();
-    }
-
-    protected final void setModelExecutable(final String value) {
-        modelExecutable.set(value);
-    }
-
-    public final ReadOnlyStringProperty modelExecutableProperty() {
-        return modelExecutable.getReadOnlyProperty();
-    }
-
-    private final ReadOnlyStringWrapper frqFile = new ReadOnlyStringWrapper(this, "frqFile"); // NOI18N.
-
-    public final String getFRQFile() {
-        return frqFile.get();
-    }
-
-    protected final void setFRQFile(final String value) {
-        frqFile.set(value);
-    }
-
-    public final ReadOnlyStringProperty frqFileProperty() {
-        return frqFile.getReadOnlyProperty();
-    }
-
-    private final ReadOnlyStringWrapper iniFile = new ReadOnlyStringWrapper(this, "iniFile"); // NOI18N.
-
-    public final String getINIFile() {
-        return iniFile.get();
-    }
-
-    protected final void setINIFile(final String value) {
-        iniFile.set(value);
-    }
-
-    public final ReadOnlyStringProperty iniFileProperty() {
-        return iniFile.getReadOnlyProperty();
-    }
-
-    private final ReadOnlyStringWrapper preActions = new ReadOnlyStringWrapper(this, "preActions"); // NOI18N.
-
-    public final String getPreActions() {
-        return preActions.get();
-    }
-
-    protected final void setPreActions(final String value) {
-        preActions.set(value);
-    }
-
-    public final ReadOnlyStringProperty preActionsProperty() {
-        return preActions.getReadOnlyProperty();
-    }
-
-    private final ReadOnlyStringWrapper postActions = new ReadOnlyStringWrapper(this, "postActions"); // NOI18N.
-
-    public final String getPostActions() {
-        return postActions.get();
-    }
-
-    protected final void setPostActions(final String value) {
-        postActions.set(value);
-    }
-
-    public final ReadOnlyStringProperty postActionsProperty() {
-        return postActions.getReadOnlyProperty();
-    }
-
-    private final ReadOnlyBooleanWrapper includePhaseHeaders = new ReadOnlyBooleanWrapper(this, "includePhaseHeaders", true); // NOI18N.
-
-    public final boolean isIncludePhaseHeaders() {
-        return includePhaseHeaders.get();
-    }
-
-    protected final void setIncludePhaseHeaders(final boolean value) {
-        includePhaseHeaders.set(value);
-    }
-
-    public final ReadOnlyBooleanProperty includePhaseHeadersProperty() {
-        return includePhaseHeaders.getReadOnlyProperty();
-    }
-
-    private final ReadOnlyBooleanWrapper includePreActionsHeader = new ReadOnlyBooleanWrapper(this, "includePreActionsHeader", true); // NOI18N.
-
-    public final boolean isIncludePreActionsHeader() {
-        return includePreActionsHeader.get();
-    }
-
-    protected final void setIncludePreActionsHeader(final boolean value) {
-        includePreActionsHeader.set(value);
-    }
-
-    public final ReadOnlyBooleanProperty includePreActionsHeaderProperty() {
-        return includePreActionsHeader.getReadOnlyProperty();
-    }
-
-    private final ReadOnlyBooleanWrapper includePostActionsHeader = new ReadOnlyBooleanWrapper(this, "includePostActionsHeader", true); // NOI18N.
-
-    public final boolean isIncludePostActionsHeader() {
-        return includePostActionsHeader.get();
-    }
-
-    protected final void setIncludePostActionsHeader(final boolean value) {
-        includePostActionsHeader.set(value);
-    }
-
-    public final ReadOnlyBooleanProperty includePostActionsHeaderProperty() {
-        return includePostActionsHeader.getReadOnlyProperty();
-    }
-
-    private final ReadOnlyBooleanWrapper makePar = new ReadOnlyBooleanWrapper(this, "makePar", true); // NOI18N.
-
-    public final boolean isMakePar() {
-        return makePar.get();
-    }
-
-    protected final void setMakePar(final boolean value) {
-        makePar.set(value);
-    }
-
-    public final ReadOnlyBooleanProperty makeParProperty() {
-        return makePar.getReadOnlyProperty();
+    public final ReadOnlyObjectProperty<ProjectParameters> parametersProperty() {
+        return parameters.getReadOnlyProperty();
     }
 }

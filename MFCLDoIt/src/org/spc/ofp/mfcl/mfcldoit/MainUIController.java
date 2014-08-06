@@ -8,8 +8,10 @@ package org.spc.ofp.mfcl.mfcldoit;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,18 +31,17 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import org.spc.ofp.mfcl.mfcldoit.control.FormError;
 import org.spc.ofp.mfcl.mfcldoit.control.FormValidator;
 import org.spc.ofp.mfcl.mfcldoit.control.codeeditor.CodeEditor;
+import org.spc.ofp.mfcl.mfcldoit.control.phase.PhaseEditorController;
 import org.spc.ofp.mfcl.mfcldoit.control.project.ProjectConfigPaneController;
 import org.spc.ofp.mfcl.mfcldoit.task.export.ExportFileParameters;
 import org.spc.ofp.mfcl.mfcldoit.task.export.ExportFileParametersBuilder;
 import org.spc.ofp.mfcl.mfcldoit.task.export.ExportFileTask;
-import org.spc.ofp.mfcl.mfcldoit.task.generate.CodeGenerateParameters;
-import org.spc.ofp.mfcl.mfcldoit.task.generate.CodeGenerateParametersBuilder;
+import org.spc.ofp.mfcl.mfcldoit.task.generate.ProjectParameters;
 import org.spc.ofp.mfcl.mfcldoit.task.generate.CodeGenerateTask;
 
 /**
@@ -69,10 +70,6 @@ public final class MainUIController extends FormValidator implements Initializab
      * Display the code on screen.
      */
     private final CodeEditor codeEditor = new CodeEditor();
-    /**
-     * The builder used to generate the parameters.
-     */
-    final CodeGenerateParametersBuilder codeGenerateBuilder = CodeGenerateParametersBuilder.create();
 
     private ResourceBundle bundle;
 
@@ -87,17 +84,7 @@ public final class MainUIController extends FormValidator implements Initializab
         previewVBox.getChildren().add(codeEditor);
         //
         projectConfigPaneController.formValidProperty().addListener(invalidationListener);
-        projectConfigPaneController.modelExecutableProperty().addListener(invalidationListener);
-        projectConfigPaneController.useRelativePathProperty().addListener(invalidationListener);
-        projectConfigPaneController.frqFileProperty().addListener(invalidationListener);
-        projectConfigPaneController.iniFileProperty().addListener(invalidationListener);
-        projectConfigPaneController.preActionsProperty().addListener(invalidationListener);
-        projectConfigPaneController.phaseNumberProperty().addListener(invalidationListener);
-        projectConfigPaneController.postActionsProperty().addListener(invalidationListener);
-        projectConfigPaneController.includePhaseHeadersProperty().addListener(invalidationListener);
-        projectConfigPaneController.includePreActionsHeaderProperty().addListener(invalidationListener);
-        projectConfigPaneController.includePostActionsHeaderProperty().addListener(invalidationListener);
-        projectConfigPaneController.makeParProperty().addListener(invalidationListener);
+        projectConfigPaneController.parametersProperty().addListener(invalidationListener);
         //
         final String lastPath = prefs.get("last.file", ""); // NOI18N.
         pathField.setText(lastPath);
@@ -121,17 +108,7 @@ public final class MainUIController extends FormValidator implements Initializab
             }
             if (projectConfigPaneController != null) {
                 projectConfigPaneController.formValidProperty().removeListener(invalidationListener);
-                projectConfigPaneController.modelExecutableProperty().removeListener(invalidationListener);
-                projectConfigPaneController.useRelativePathProperty().removeListener(invalidationListener);
-                projectConfigPaneController.frqFileProperty().removeListener(invalidationListener);
-                projectConfigPaneController.iniFileProperty().removeListener(invalidationListener);
-                projectConfigPaneController.preActionsProperty().removeListener(invalidationListener);
-                projectConfigPaneController.phaseNumberProperty().removeListener(invalidationListener);
-                projectConfigPaneController.postActionsProperty().removeListener(invalidationListener);
-                projectConfigPaneController.includePhaseHeadersProperty().removeListener(invalidationListener);
-                projectConfigPaneController.includePreActionsHeaderProperty().removeListener(invalidationListener);
-                projectConfigPaneController.includePostActionsHeaderProperty().removeListener(invalidationListener);
-                projectConfigPaneController.makeParProperty().removeListener(invalidationListener);
+                projectConfigPaneController.parametersProperty().removeListener(invalidationListener);
                 projectConfigPaneController.dispose();
                 projectConfigPaneController = null;
             }
@@ -181,6 +158,10 @@ public final class MainUIController extends FormValidator implements Initializab
      * Allow to store user preferences.
      */
     private final Preferences prefs = Preferences.userNodeForPackage(getClass());
+    /**
+     * Controllerss for each phase.
+     */
+    private final Map<Number, PhaseEditorController> phaseControllers = new HashMap<>();
 
     @Override
     protected void impl_validateForm() {
@@ -192,46 +173,26 @@ public final class MainUIController extends FormValidator implements Initializab
         String filePath = pathField.getText();
         filePath = (filePath != null) ? filePath.trim() : null;
         if (filePath == null || filePath.isEmpty()) {
-            // @todo Localize!
-            allErrors.add(new FormError("Export path cannot be empty.", pathField));
+            allErrors.add(new FormError(bundle.getString("ERROR_EXPORT_PATH_EMPTY_MESSAGE"), pathField)); // NOI18N.
             pathField.getStyleClass().add(ERROR_STYLE_CLASSS);
         }
-        // Model executable.
-        final String modelExecutable = projectConfigPaneController.getModelExecutable();
-        codeGenerateBuilder.modelExecutable(modelExecutable);
-        // Use relative path.
-        final boolean useRelativePath = projectConfigPaneController.isUseRelativePath();
-        codeGenerateBuilder.useRelativePath(useRelativePath);
-        // FRQ file.
-        final String frqFile = projectConfigPaneController.getFRQFile();
-        codeGenerateBuilder.frqFile(frqFile);
-        // Make par.
-        codeGenerateBuilder.makePar(projectConfigPaneController.isMakePar());
-        // INI file.
-        final String iniFile = projectConfigPaneController.getINIFile();
-        codeGenerateBuilder.iniFile(iniFile);
-        // Pre-action.
-        final String preActions = projectConfigPaneController.getPreActions();
-        codeGenerateBuilder.preActions(preActions);
-        codeGenerateBuilder.includePreActionsHeader(projectConfigPaneController.isIncludePreActionsHeader());
-        // Post-action.
-        final String postActions = projectConfigPaneController.getPostActions();
-        codeGenerateBuilder.postActions(postActions);
-        codeGenerateBuilder.includePostActionsHeader(projectConfigPaneController.isIncludePostActionsHeader());
         // Phase tabs.
+        final ProjectParameters projectParameters = projectConfigPaneController.getParameters();
         final int phaseTabOffet = 1;
         final int oldPhaseNumber = tabPane.getTabs().size() - phaseTabOffet;
-        final int newPhaseNumber = projectConfigPaneController.getPhaseNumber();
+        final int newPhaseNumber = projectParameters.getPhaseNumber();
         // Add if needed.
         for (int phaseIndex = oldPhaseNumber; phaseIndex < newPhaseNumber; phaseIndex++) {
             try {
-                // @todo Localize!
                 final URL fxmlURL = getClass().getResource("control/phase/PhaseEditor.fxml"); // NOI18N.
-                FXMLLoader fxmlLoader = new FXMLLoader(fxmlURL, bundle);
+                final FXMLLoader fxmlLoader = new FXMLLoader(fxmlURL, bundle);
                 final Node phaseNode = fxmlLoader.load();
-                final Tab tabNode = new Tab(String.format("Phase %d", phaseIndex + 1));
-                tabNode.setContent(phaseNode);
-                tabPane.getTabs().add(tabNode);
+                final PhaseEditorController phaseController = (PhaseEditorController) fxmlLoader.getController();
+                final String tabTitle = String.format(bundle.getString("PHASE_PATTERN"), phaseIndex + 1); // NOI18N.
+                final Tab tab = new Tab(tabTitle);
+                tab.setContent(phaseNode);
+                tabPane.getTabs().add(tab);
+                phaseControllers.put(phaseIndex, phaseController);
             } catch (IOException ex) {
                 Logger.getLogger(MainUIController.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
             }
@@ -239,9 +200,20 @@ public final class MainUIController extends FormValidator implements Initializab
         // Remove if needed.
         for (int phaseIndex = newPhaseNumber; phaseIndex < oldPhaseNumber; phaseIndex++) {
             final Tab tab = tabPane.getTabs().remove(newPhaseNumber + phaseTabOffet);
+            final PhaseEditorController phaseController = phaseControllers.remove(phaseIndex);
+            phaseController.dispose();
         }
-        codeGenerateBuilder.phaseNumber(newPhaseNumber);
-        codeGenerateBuilder.includePhaseHeaders(projectConfigPaneController.isIncludePhaseHeaders());
+        // Configure style for special phases.
+        tabPane.getTabs().forEach(tab -> tab.getStyleClass().removeAll("phase1", "phase2", "final-phase")); // NOI18N.
+        if (newPhaseNumber >= 1) {
+            tabPane.getTabs().get(phaseTabOffet + 0).getStyleClass().add("phase1"); // NOI18N.
+        }
+        if (newPhaseNumber >= 2) {
+            tabPane.getTabs().get(phaseTabOffet + 1).getStyleClass().add("phase2"); // NOI18N.
+        }
+        if (newPhaseNumber > 0) {
+            tabPane.getTabs().get(phaseTabOffet + newPhaseNumber - 1).getStyleClass().add("final-phase"); // NOI18N.
+        }
         //
         updateCodeInPreview();
         //
@@ -263,8 +235,8 @@ public final class MainUIController extends FormValidator implements Initializab
 
                 @Override
                 protected Task<String> createTask() {
-                    final CodeGenerateParameters codeGenerateParameters = codeGenerateBuilder.build();
-                    final CodeGenerateTask task = new CodeGenerateTask(codeGenerateParameters);
+                    final ProjectParameters projectParameters = projectConfigPaneController.getParameters();
+                    final CodeGenerateTask task = new CodeGenerateTask(projectParameters);
                     return task;
                 }
             };
@@ -306,12 +278,12 @@ public final class MainUIController extends FormValidator implements Initializab
                     final String filePath = pathField.getText().trim();
                     prefs.put("last.file", filePath); // NOI18N.            
                     final File file = new File(filePath);
-                    final CodeGenerateParameters codeGenerateParameters = codeGenerateBuilder.build();
+                    final ProjectParameters projectParameters = projectConfigPaneController.getParameters();
                     final ExportFileParametersBuilder exportFileBuilder = ExportFileParametersBuilder.create();
                     exportFileBuilder
                             .folder(file.getParentFile())
                             .filename(file.getName())
-                            .codeGenerateParameters(codeGenerateParameters);
+                            .projectParameters(projectParameters);
                     final ExportFileParameters exportFileParameters = exportFileBuilder.build();
                     final ExportFileTask task = new ExportFileTask(exportFileParameters);
                     return task;

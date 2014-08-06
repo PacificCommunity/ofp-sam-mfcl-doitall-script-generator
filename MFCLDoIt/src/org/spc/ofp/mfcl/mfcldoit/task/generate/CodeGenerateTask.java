@@ -22,14 +22,14 @@ public final class CodeGenerateTask extends Task<String> {
     /**
      * The parameters.
      */
-    private final CodeGenerateParameters parameters;
+    private final ProjectParameters parameters;
 
     /**
      * Creates a new instance.
      * @param parameters The parameters.
      * @throws IllegalArgumentException If {@code parameters} is {@code null}.
      */
-    public CodeGenerateTask(final CodeGenerateParameters parameters) throws IllegalArgumentException {
+    public CodeGenerateTask(final ProjectParameters parameters) throws IllegalArgumentException {
         if (parameters == null) {
             throw new IllegalArgumentException("Parameters must not be null."); // NOI18N.
         }

@@ -70,3 +70,8 @@
     -fx-font-size: 0.85em;
     -fx-font-weight: normal;
 }
+.phase1,
+.phase2,
+.final-phase {
+    -fx-font-weight: bold;
+}
