@@ -30,7 +30,7 @@ public class Test_AddonPane extends Application {
         final Node node = (Node) fxmlLoader.load();
         final StackPane root = new StackPane();
         root.getChildren().add(node);
-        final Scene scene = new Scene(root, 300, 300);
+        final Scene scene = new Scene(root, 600, 500);
         final URL cssURL = MFCLDoIt.class.getResource("MFCLDoIt.css");
         scene.getStylesheets().add(cssURL.toExternalForm());
         primaryStage.setTitle("Test_AddonPane"); // NOI18N.

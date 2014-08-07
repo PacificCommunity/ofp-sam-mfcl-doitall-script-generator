@@ -25,7 +25,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
+import javafx.util.Callback;
 import org.spc.ofp.mfcl.mfcldoit.FXMLControllerBase;
 
 /**
@@ -33,7 +36,9 @@ import org.spc.ofp.mfcl.mfcldoit.FXMLControllerBase;
  * @author Fabrice Bouyé (fabriceb@spc.int)
  */
 public final class AddonPaneController extends FXMLControllerBase {
-    
+
+    @FXML
+    private ListView<Addon> addonList;
     @FXML
     private Label nameLabel;
     @FXML
@@ -44,10 +49,11 @@ public final class AddonPaneController extends FXMLControllerBase {
     private Label descriptionLabel;
     @FXML
     private TextArea licenseArea;
-    
+
     @Override
     public void dispose() {
         try {
+            addonProperty().unbind();
             addonProperty().removeListener(invalidationListener);
             setAddon(null);
             updateContent();
@@ -55,14 +61,34 @@ public final class AddonPaneController extends FXMLControllerBase {
                 loadAddonsService.cancel();
                 loadAddonsService = null;
             }
+            if (addonList != null) {
+                addonList.getItems().clear();
+                addonList.setCellFactory(null);
+                addonList = null;
+            }
         } finally {
             super.dispose();
         }
     }
-    
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        addonList.setCellFactory(listView -> new ListCell<Addon>() {
+
+            @Override
+            protected void updateItem(Addon item, boolean empty) {
+                super.updateItem(item, empty);
+                String text = null;
+                if (!empty && item != null) {
+                    text = item.name;
+                }
+                setText(text);
+            }
+        });
+        //
+        addonProperty().bind(addonList.getSelectionModel().selectedItemProperty());
         addonProperty().addListener(invalidationListener);
+        //
         loadAddons();
     }
 
@@ -100,18 +126,18 @@ public final class AddonPaneController extends FXMLControllerBase {
 
     ////////////////////////////////////////////////////////////////////////////
     private Service<String> loadLicenseService;
-    
+
     private void loadLicense(final String filename) {
         if (loadLicenseService != null) {
             loadLicenseService.cancel();
         }
         if (loadLicenseService == null) {
             loadLicenseService = new Service<String>() {
-                
+
                 @Override
                 protected Task<String> createTask() {
                     return new Task<String>() {
-                        
+
                         @Override
                         protected String call() throws Exception {
                             final URL fileURL = getClass().getResource(filename);
@@ -137,20 +163,20 @@ public final class AddonPaneController extends FXMLControllerBase {
         }
         loadLicenseService.restart();
     }
-    
+
     private Service<List<Addon>> loadAddonsService;
-    
+
     private void loadAddons() {
         if (loadAddonsService != null) {
             loadAddonsService.cancel();
         }
         if (loadAddonsService == null) {
             loadAddonsService = new Service<List<Addon>>() {
-                
+
                 @Override
                 protected Task<List<Addon>> createTask() {
                     return new Task<List<Addon>>() {
-                        
+
                         @Override
                         protected List<Addon> call() throws Exception {
                             final URL fileURL = getClass().getResource("addon.properties"); // NOI18N.
@@ -177,7 +203,8 @@ public final class AddonPaneController extends FXMLControllerBase {
             };
             loadAddonsService.setOnSucceeded(workerStateEvent -> {
                 final List<Addon> addons = loadAddonsService.getValue();
-                setAddon(addons.get(0));
+                addonList.getItems().setAll(addons);
+                addonList.getSelectionModel().select(0);
             });
             loadAddonsService.setOnCancelled(workerStateEvent -> {
             });
@@ -193,11 +220,11 @@ public final class AddonPaneController extends FXMLControllerBase {
     final void setAddon(final Addon value) {
         addon.set(value);
     }
-    
+
     final Addon getAddon() {
         return addon.get();
     }
-    
+
     final ObjectProperty<Addon> addonProperty() {
         return addon;
     }

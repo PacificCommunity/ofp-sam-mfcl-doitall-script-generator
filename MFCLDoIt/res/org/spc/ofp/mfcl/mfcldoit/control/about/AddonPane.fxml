@@ -6,6 +6,7 @@
   http://www.spc.int/                                                
 -->
 
+<?import javafx.scene.media.*?>
 <?import javafx.scene.image.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
@@ -15,37 +16,42 @@
 
 <AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.spc.ofp.mfcl.mfcldoit.control.about.AddonPaneController">
    <children>
-      <GridPane layoutX="49.0" layoutY="91.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <columnConstraints>
-          <ColumnConstraints hgrow="NEVER" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints vgrow="NEVER" />
-          <RowConstraints vgrow="NEVER" />
-          <RowConstraints vgrow="NEVER" />
-            <RowConstraints vgrow="SOMETIMES" />
-            <RowConstraints vgrow="NEVER" />
-            <RowConstraints minHeight="50.0" vgrow="ALWAYS" />
-            <RowConstraints vgrow="NEVER" />
-        </rowConstraints>
+      <HBox prefHeight="100.0" prefWidth="200.0" styleClass="hbox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label fx:id="nameLabel" styleClass="h2" text="Label" />
-            <Label fx:id="versionLabel" text="%ABOUT_ADDON_VERSION_LABEL" GridPane.rowIndex="1" />
-            <Label fx:id="versionValueLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <Label fx:id="homeLabel" text="%ABOUT_ADDON_SITE_LABEL" GridPane.rowIndex="2" />
-            <Hyperlink fx:id="homeLink" onAction="#handleHomeLink" text="Hyperlink" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <Label fx:id="descriptionLabel" text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sit amet dui non risus ultrices dignissim id quis nunc. In eu tincidunt felis." wrapText="true" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
-            <Label fx:id="licenseLabel" styleClass="h3" text="%ABOUT_ADDON_LICENSE_LABEL" GridPane.rowIndex="4" />
-            <TextArea fx:id="licenseArea" editable="false" prefHeight="200.0" prefWidth="200.0" promptText="%ABOUT_ADDON_LICENSE_PROMPT" styleClass="license" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
-            <HBox styleClass="action-box" GridPane.columnSpan="2147483647" GridPane.rowIndex="6">
-                <children>
-                    <Button /> 
-                    <Button />
-                    <Button />
-                </children>
-            </HBox>
+            <ListView fx:id="addonList" minWidth="150.0" prefWidth="150.0" HBox.hgrow="NEVER" />
+            <GridPane HBox.hgrow="ALWAYS">
+              <columnConstraints>
+                <ColumnConstraints hgrow="NEVER" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints vgrow="NEVER" />
+                <RowConstraints vgrow="NEVER" />
+                <RowConstraints vgrow="NEVER" />
+                  <RowConstraints vgrow="SOMETIMES" />
+                  <RowConstraints vgrow="NEVER" />
+                  <RowConstraints minHeight="50.0" vgrow="ALWAYS" />
+                  <RowConstraints vgrow="NEVER" />
+              </rowConstraints>
+               <children>
+                  <Label fx:id="nameLabel" styleClass="h2" text="Label" />
+                  <Label fx:id="versionLabel" text="%ABOUT_ADDON_VERSION_LABEL" GridPane.rowIndex="1" />
+                  <Label fx:id="versionValueLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label fx:id="homeLabel" text="%ABOUT_ADDON_SITE_LABEL" GridPane.rowIndex="2" />
+                  <Hyperlink fx:id="homeLink" onAction="#handleHomeLink" text="Hyperlink" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Label fx:id="descriptionLabel" text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sit amet dui non risus ultrices dignissim id quis nunc. In eu tincidunt felis." wrapText="true" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
+                  <Label fx:id="licenseLabel" styleClass="h3" text="%ABOUT_ADDON_LICENSE_LABEL" GridPane.rowIndex="4" />
+                  <TextArea fx:id="licenseArea" editable="false" prefHeight="200.0" prefWidth="200.0" promptText="%ABOUT_ADDON_LICENSE_PROMPT" styleClass="license" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
+                  <HBox styleClass="action-box" GridPane.columnSpan="2147483647" GridPane.rowIndex="6">
+                      <children>
+                          <Button /> 
+                          <Button />
+                          <Button />
+                      </children>
+                  </HBox>
+               </children>
+            </GridPane>
          </children>
-      </GridPane>
+      </HBox>
    </children>
 </AnchorPane>
