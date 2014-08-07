@@ -61,6 +61,11 @@
     -fx-spacing: 6px;
     -fx-alignment: center;
 }
+.action-box {
+    -fx-padding: 0px;
+    -fx-spacing: 0px;
+    -fx-alignment: center-right;
+}
 .main-button {
     -fx-base: royalblue;
     -fx-font-size: 1.5em;
@@ -74,4 +79,10 @@
 .phase2,
 .final-phase {
     -fx-font-weight: bold;
+}
+.license {
+    -fx-font-family: monospace;
+}
+.license .context-menu {
+    -fx-font-family: system;    
 }
