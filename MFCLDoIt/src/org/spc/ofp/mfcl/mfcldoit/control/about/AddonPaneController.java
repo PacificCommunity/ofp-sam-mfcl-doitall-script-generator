@@ -33,7 +33,7 @@ import org.spc.ofp.mfcl.mfcldoit.FXMLControllerBase;
  * @author Fabrice Bouyé (fabriceb@spc.int)
  */
 public final class AddonPaneController extends FXMLControllerBase {
-
+    
     @FXML
     private Label nameLabel;
     @FXML
@@ -44,7 +44,7 @@ public final class AddonPaneController extends FXMLControllerBase {
     private Label descriptionLabel;
     @FXML
     private TextArea licenseArea;
-
+    
     @Override
     public void dispose() {
         try {
@@ -59,7 +59,7 @@ public final class AddonPaneController extends FXMLControllerBase {
             super.dispose();
         }
     }
-
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         addonProperty().addListener(invalidationListener);
@@ -100,18 +100,18 @@ public final class AddonPaneController extends FXMLControllerBase {
 
     ////////////////////////////////////////////////////////////////////////////
     private Service<String> loadLicenseService;
-
+    
     private void loadLicense(final String filename) {
         if (loadLicenseService != null) {
             loadLicenseService.cancel();
         }
         if (loadLicenseService == null) {
             loadLicenseService = new Service<String>() {
-
+                
                 @Override
                 protected Task<String> createTask() {
                     return new Task<String>() {
-
+                        
                         @Override
                         protected String call() throws Exception {
                             final URL fileURL = getClass().getResource(filename);
@@ -137,20 +137,20 @@ public final class AddonPaneController extends FXMLControllerBase {
         }
         loadLicenseService.restart();
     }
-
+    
     private Service<List<Addon>> loadAddonsService;
-
+    
     private void loadAddons() {
         if (loadAddonsService != null) {
             loadAddonsService.cancel();
         }
         if (loadAddonsService == null) {
             loadAddonsService = new Service<List<Addon>>() {
-
+                
                 @Override
                 protected Task<List<Addon>> createTask() {
                     return new Task<List<Addon>>() {
-
+                        
                         @Override
                         protected List<Addon> call() throws Exception {
                             final URL fileURL = getClass().getResource("addon.properties"); // NOI18N.
@@ -193,11 +193,11 @@ public final class AddonPaneController extends FXMLControllerBase {
     final void setAddon(final Addon value) {
         addon.set(value);
     }
-
+    
     final Addon getAddon() {
         return addon.get();
     }
-
+    
     final ObjectProperty<Addon> addonProperty() {
         return addon;
     }

@@ -74,25 +74,9 @@ public final class MainUIController extends FormValidator implements Initializab
     private ResourceBundle bundle;
 
     /**
-     * Initializes the controller class.
+     * Creates a new instance.
      */
-    @Override
-    public void initialize(final URL url, final ResourceBundle bundle) {
-        this.bundle = bundle;
-        //
-        VBox.setVgrow(codeEditor, Priority.ALWAYS);
-        previewVBox.getChildren().add(codeEditor);
-        //
-        projectConfigPaneController.formValidProperty().addListener(invalidationListener);
-        projectConfigPaneController.parametersProperty().addListener(invalidationListener);
-        //
-        final String lastPath = prefs.get("last.file", ""); // NOI18N.
-        pathField.setText(lastPath);
-        pathField.textProperty().addListener(invalidationListener);
-        //
-        exportButton.disableProperty().bind(formValidProperty().not());
-        //
-        requestValidateForm();
+    public MainUIController() {
     }
 
     @Override
@@ -107,6 +91,7 @@ public final class MainUIController extends FormValidator implements Initializab
                 codeGenerateService = null;
             }
             if (projectConfigPaneController != null) {
+                projectConfigPaneController.applicationProperty().unbind();
                 projectConfigPaneController.formValidProperty().removeListener(invalidationListener);
                 projectConfigPaneController.parametersProperty().removeListener(invalidationListener);
                 projectConfigPaneController.dispose();
@@ -122,6 +107,26 @@ public final class MainUIController extends FormValidator implements Initializab
         } finally {
             super.dispose();
         }
+    }
+
+    @Override
+    public void initialize(final URL url, final ResourceBundle bundle) {
+        this.bundle = bundle;
+        //
+        VBox.setVgrow(codeEditor, Priority.ALWAYS);
+        previewVBox.getChildren().add(codeEditor);
+        //
+        projectConfigPaneController.applicationProperty().bind(applicationProperty());
+        projectConfigPaneController.formValidProperty().addListener(invalidationListener);
+        projectConfigPaneController.parametersProperty().addListener(invalidationListener);
+        //
+        final String lastPath = prefs.get("last.file", ""); // NOI18N.
+        pathField.setText(lastPath);
+        pathField.textProperty().addListener(invalidationListener);
+        //
+        exportButton.disableProperty().bind(formValidProperty().not());
+        //
+        requestValidateForm();
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -188,6 +193,7 @@ public final class MainUIController extends FormValidator implements Initializab
                 final FXMLLoader fxmlLoader = new FXMLLoader(fxmlURL, bundle);
                 final Node phaseNode = fxmlLoader.load();
                 final PhaseEditorController phaseController = (PhaseEditorController) fxmlLoader.getController();
+                phaseController.applicationProperty().bind(applicationProperty());
                 final String tabTitle = String.format(bundle.getString("PHASE_PATTERN"), phaseIndex + 1); // NOI18N.
                 final Tab tab = new Tab(tabTitle);
                 tab.setContent(phaseNode);
@@ -201,6 +207,7 @@ public final class MainUIController extends FormValidator implements Initializab
         for (int phaseIndex = newPhaseNumber; phaseIndex < oldPhaseNumber; phaseIndex++) {
             final Tab tab = tabPane.getTabs().remove(newPhaseNumber + phaseTabOffet);
             final PhaseEditorController phaseController = phaseControllers.remove(phaseIndex);
+            phaseController.applicationProperty().unbind();
             phaseController.dispose();
         }
         // Configure style for special phases.

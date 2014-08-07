@@ -12,12 +12,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextArea;
 import org.spc.ofp.mfcl.mfcldoit.Disposable;
+import org.spc.ofp.mfcl.mfcldoit.control.FormValidator;
 
 /**
  * FXML Controller class
  * @author Fabrice Bouyé (fabriceb@spc.int)
  */
-public final class PhaseEditorController implements Initializable, Disposable {
+public final class PhaseEditorController extends FormValidator {
 
     @FXML
     private FishFlagsEditorController fishFlagsEditorController;
@@ -53,6 +54,12 @@ public final class PhaseEditorController implements Initializable, Disposable {
         postActionsArea.textProperty().addListener(valueInvalidationListener);
     }
 
+    ////////////////////////////////////////////////////////////////////////////
     private final InvalidationListener valueInvalidationListener = observable -> {
     };
+
+    ////////////////////////////////////////////////////////////////////////////
+    @Override
+    protected void impl_validateForm() {
+    }
 }

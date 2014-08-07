@@ -21,6 +21,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import org.spc.ofp.mfcl.mfcldoit.Disposable;
+import org.spc.ofp.mfcl.mfcldoit.control.FormValidator;
 import org.spc.ofp.mfcl.mfcldoit.flag.FishFlag;
 import org.spc.ofp.mfcl.mfcldoit.flag.Fishery;
 import org.spc.ofp.mfcl.mfcldoit.flag.FisheryGroup;
@@ -29,8 +30,8 @@ import org.spc.ofp.mfcl.mfcldoit.flag.FisheryGroup;
  * FXML Controller class
  * @author Fabrice Bouyé (fabriceb@spc.int)
  */
-public final class FishFlagsEditorController implements Initializable, Disposable {
-    
+public final class FishFlagsEditorController extends FormValidator {
+
     @FXML
     private TableView<Fishery> tableView;
     @FXML
@@ -45,7 +46,7 @@ public final class FishFlagsEditorController implements Initializable, Disposabl
     @Override
     public void dispose() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }        
+    }
 
     /**
      * Initializes the controller class.
@@ -61,6 +62,10 @@ public final class FishFlagsEditorController implements Initializable, Disposabl
     }
 
     ////////////////////////////////////////////////////////////////////////////
+    @Override
+    protected void impl_validateForm() {
+    }
+
     private void populateColumns() {
         tableView.getColumns().remove(1, tableView.getColumns().size());
         final List<TableColumn<Fishery, FisheryGroup>> flagColumns = flags.stream()
@@ -126,7 +131,7 @@ public final class FishFlagsEditorController implements Initializable, Disposabl
      */
     private final ObservableList<FishFlag> flags = FXCollections.observableList(new LinkedList<>());
     private final ObservableList<FishFlag> flagsReadOnly = FXCollections.unmodifiableObservableList(flags);
-    
+
     public final ObservableList<FishFlag> getFlags() {
         return flagsReadOnly;
     }
@@ -136,14 +141,15 @@ public final class FishFlagsEditorController implements Initializable, Disposabl
      */
     private final ObservableList<Fishery> fisheries = FXCollections.observableList(new LinkedList<>());
     private final ObservableList<Fishery> fisheriesReadOnly = FXCollections.unmodifiableObservableList(fisheries);
-    
+
     public final ObservableList<Fishery> getFisheries() {
         return fisheriesReadOnly;
     }
-    
+
     public void loadContent(final List<Fishery> fisheries, final List<FishFlag> flags) {
         this.fisheries.setAll(fisheries);
         this.flags.setAll(flags);
         populateColumns();
     }
+
 }

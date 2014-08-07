@@ -15,13 +15,13 @@ import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.Duration;
-import org.spc.ofp.mfcl.mfcldoit.Disposable;
+import org.spc.ofp.mfcl.mfcldoit.FXMLControllerBase;
 
 /**
- * The base class for a form validator.
+ * The base class for  controller that is a form validator.
  * @author Fabrice Bouyé (fabriceb@spc.int)
  */
-public abstract class FormValidator implements Disposable {
+public abstract class FormValidator extends FXMLControllerBase {
 
     /**
      * The style class to use whenever a control is in an error state.
@@ -38,12 +38,16 @@ public abstract class FormValidator implements Disposable {
 
     @Override
     public void dispose() {
-        if (validateFormTimer != null) {
-            validateFormTimer.stop();
-            validateFormTimer = null;
+        try {
+            if (validateFormTimer != null) {
+                validateFormTimer.stop();
+                validateFormTimer = null;
+            }
+            errors.clear();
+            formValid.unbind();
+        } finally {
+            super.dispose();
         }
-        errors.clear();
-        formValid.unbind();
     }
 
     ////////////////////////////////////////////////////////////////////////////

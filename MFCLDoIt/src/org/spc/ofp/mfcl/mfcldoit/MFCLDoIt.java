@@ -21,7 +21,7 @@ import javafx.stage.Stage;
  * @author Fabrice Bouyé (fabriceb@spc.int)
  */
 public final class MFCLDoIt extends Application {
-
+    
     @Override
     public void start(Stage primaryStage) {
         try {
@@ -29,6 +29,8 @@ public final class MFCLDoIt extends Application {
             final ResourceBundle bundle = ResourceBundle.getBundle("org.spc.ofp.mfcl.mfcldoit.strings"); // NOI18N.
             final FXMLLoader fxmlLoader = new FXMLLoader(fxmlURL, bundle);
             final Parent root = fxmlLoader.<Parent>load();
+            final MainUIController controller = fxmlLoader.getController();
+            controller.setApplication(this);
             final Scene scene = new Scene(root);
             final URL cssURL = getClass().getResource("MFCLDoIt.css"); // NOI18N.
             scene.getStylesheets().add(cssURL.toExternalForm());
