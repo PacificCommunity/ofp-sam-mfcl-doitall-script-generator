@@ -82,6 +82,7 @@
 }
 .license {
     -fx-font-family: monospace;
+    -fx-text-alignment: justify;
 }
 .license .context-menu {
     -fx-font-family: system;    

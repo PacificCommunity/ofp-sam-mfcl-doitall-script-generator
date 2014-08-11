@@ -28,6 +28,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.text.TextAlignment;
 import org.spc.ofp.mfcl.mfcldoit.FXMLControllerBase;
 import org.spc.ofp.mfcl.mfcldoit.task.print.PrintTextParameters;
@@ -128,18 +130,32 @@ public final class AddonPaneController extends FXMLControllerBase {
     }
     
     @FXML
+    private void handleCopyButton(final ActionEvent actionEvent) {
+        final Clipboard clipboard = Clipboard.getSystemClipboard();
+        final ClipboardContent content = new ClipboardContent();
+        content.putString(licenseArea.getText());
+        clipboard.setContent(content);
+    }
+    
+    private Service<Void> printService;
+    
+    @FXML
     private void handlePrintButton(final ActionEvent actionEvent) {
-        Service<Void> printService = new Service<Void>() {
-            
-            @Override
-            protected Task<Void> createTask() {
-                final PrintTextParameters parameters = PrintTextParametersBuilder.create()
-                        .text(licenseArea.getText())
-                        .owner(licenseArea.getScene().getWindow())
-                        .build();
-                return new PrintTextTask(parameters);
-            }
-        };
+        if (printService == null) {
+            printService = new Service<Void>() {
+                
+                @Override
+                protected Task<Void> createTask() {
+                    final PrintTextParameters parameters = PrintTextParametersBuilder.create()
+                            .text(licenseArea.getText())
+                            .textAlignment(TextAlignment.JUSTIFY)
+                            .font(licenseArea.getFont())
+                            .owner(licenseArea.getScene().getWindow())
+                            .build();
+                    return new PrintTextTask(parameters);
+                }
+            };
+        }
         printService.restart();
     }
     ////////////////////////////////////////////////////////////////////////////

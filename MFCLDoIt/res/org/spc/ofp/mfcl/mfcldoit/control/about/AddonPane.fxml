@@ -41,11 +41,15 @@
                   <Hyperlink fx:id="homeLink" onAction="#handleHomeLink" text="Hyperlink" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                   <Label fx:id="descriptionLabel" text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sit amet dui non risus ultrices dignissim id quis nunc. In eu tincidunt felis." wrapText="true" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
                   <Label fx:id="licenseLabel" styleClass="h3" text="%ABOUT_ADDON_LICENSE_LABEL" GridPane.rowIndex="4" />
-                  <TextArea fx:id="licenseArea" editable="false" prefHeight="200.0" prefWidth="200.0" promptText="%ABOUT_ADDON_LICENSE_PROMPT" styleClass="license" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
+                  <TextArea fx:id="licenseArea" editable="false" prefHeight="200.0" prefWidth="200.0" promptText="%ABOUT_ADDON_LICENSE_PROMPT" styleClass="license" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" wrapText="true" />
                   <HBox styleClass="action-box" GridPane.columnSpan="2147483647" GridPane.rowIndex="6">
                       <children>
                           <Button /> 
-                          <Button />
+                          <Button fx:id="copyButton" text="%ABOUT_ADDON_COPY_LICENSE_LABEL" onAction="#handleCopyButton">
+                              <tooltip>
+                                  <Tooltip fx:id="copyTip" text="%ABOUT_ADDON_COPY_LICENSE_TIP"/>
+                              </tooltip>
+                          </Button>
                           <Button fx:id="printButton" text="%ABOUT_ADDON_PRINT_LICENSE_LABEL" onAction="#handlePrintButton">
                               <tooltip>
                                   <Tooltip fx:id="printTip" text="%ABOUT_ADDON_PRINT_LICENSE_TIP"/>
