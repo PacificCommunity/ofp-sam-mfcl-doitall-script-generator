@@ -46,7 +46,11 @@
                       <children>
                           <Button /> 
                           <Button />
-                          <Button />
+                          <Button fx:id="printButton" text="%ABOUT_ADDON_PRINT_LICENSE_LABEL" onAction="#handlePrintButton">
+                              <tooltip>
+                                  <Tooltip fx:id="printTip" text="%ABOUT_ADDON_PRINT_LICENSE_TIP"/>
+                              </tooltip>
+                          </Button>
                       </children>
                   </HBox>
                </children>
