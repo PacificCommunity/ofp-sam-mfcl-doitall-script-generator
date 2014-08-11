@@ -5,17 +5,25 @@
  ***********************************************************************/
 package org.spc.ofp.mfcl.mfcldoit.control.about;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -31,6 +39,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.FileChooser;
 import org.spc.ofp.mfcl.mfcldoit.FXMLControllerBase;
 import org.spc.ofp.mfcl.mfcldoit.task.print.PrintTextParameters;
 import org.spc.ofp.mfcl.mfcldoit.task.print.PrintTextParametersBuilder;
@@ -41,7 +50,7 @@ import org.spc.ofp.mfcl.mfcldoit.task.print.PrintTextTask;
  * @author Fabrice Bouyé (fabriceb@spc.int)
  */
 public final class AddonPaneController extends FXMLControllerBase {
-    
+
     @FXML
     private ListView<Addon> addonList;
     @FXML
@@ -54,7 +63,7 @@ public final class AddonPaneController extends FXMLControllerBase {
     private Label descriptionLabel;
     @FXML
     private TextArea licenseArea;
-    
+
     @Override
     public void dispose() {
         try {
@@ -75,11 +84,11 @@ public final class AddonPaneController extends FXMLControllerBase {
             super.dispose();
         }
     }
-    
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         addonList.setCellFactory(listView -> new ListCell<Addon>() {
-            
+
             @Override
             protected void updateItem(Addon item, boolean empty) {
                 super.updateItem(item, empty);
@@ -128,7 +137,44 @@ public final class AddonPaneController extends FXMLControllerBase {
             browse(url);
         }
     }
-    
+
+    private Service<Void> licenseWriteService;
+
+    @FXML
+    private void handleSaveButton(final ActionEvent actionEvent) {
+        // @todo Get last path from preferences.
+        final File directory = new File(System.getProperty("user.dir")); // NOI18N.
+        final FileChooser dialog = new FileChooser();
+        dialog.setInitialDirectory(directory);
+        final Optional<File> fileOptional = Optional.ofNullable(dialog.showSaveDialog(licenseArea.getScene().getWindow()));
+        fileOptional.ifPresent(file -> {
+            // @todo Save last path in preferences.
+            if (licenseWriteService == null) {
+                licenseWriteService = new Service<Void>() {
+
+                    @Override
+                    protected Task<Void> createTask() {
+                        return new Task<Void>() {
+
+                            @Override
+                            protected Void call() throws Exception {
+                                final String text = licenseArea.getText();
+                                final List<String> lines = Arrays.asList(text.split("\n")); // NOI18N.
+                                Files.write(file.toPath(), lines, Charset.forName("utf-8"), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING); // NOI18N.
+                                return null;
+                            }
+                        };
+                    }
+                };
+                licenseWriteService.setOnFailed(workerStateEvent -> {
+                    final Throwable ex = licenseWriteService.getException();
+                    Logger.getLogger(AddonPaneController.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+                });
+            }
+            licenseWriteService.restart();
+        });
+    }
+
     @FXML
     private void handleCopyButton(final ActionEvent actionEvent) {
         final Clipboard clipboard = Clipboard.getSystemClipboard();
@@ -136,14 +182,14 @@ public final class AddonPaneController extends FXMLControllerBase {
         content.putString(licenseArea.getText());
         clipboard.setContent(content);
     }
-    
+
     private Service<Void> printService;
-    
+
     @FXML
     private void handlePrintButton(final ActionEvent actionEvent) {
         if (printService == null) {
             printService = new Service<Void>() {
-                
+
                 @Override
                 protected Task<Void> createTask() {
                     final PrintTextParameters parameters = PrintTextParametersBuilder.create()
@@ -155,23 +201,28 @@ public final class AddonPaneController extends FXMLControllerBase {
                     return new PrintTextTask(parameters);
                 }
             };
+            printService.setOnFailed(workerStateEvent -> {
+                final Throwable ex = printService.getException();
+                Logger.getLogger(AddonPaneController.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+            });
+
         }
         printService.restart();
     }
     ////////////////////////////////////////////////////////////////////////////
     private Service<String> loadLicenseService;
-    
+
     private void loadLicense(final String filename) {
         if (loadLicenseService != null) {
             loadLicenseService.cancel();
         }
         if (loadLicenseService == null) {
             loadLicenseService = new Service<String>() {
-                
+
                 @Override
                 protected Task<String> createTask() {
                     return new Task<String>() {
-                        
+
                         @Override
                         protected String call() throws Exception {
                             final URL fileURL = getClass().getResource(filename);
@@ -197,20 +248,20 @@ public final class AddonPaneController extends FXMLControllerBase {
         }
         loadLicenseService.restart();
     }
-    
+
     private Service<List<Addon>> loadAddonsService;
-    
+
     private void loadAddons() {
         if (loadAddonsService != null) {
             loadAddonsService.cancel();
         }
         if (loadAddonsService == null) {
             loadAddonsService = new Service<List<Addon>>() {
-                
+
                 @Override
                 protected Task<List<Addon>> createTask() {
                     return new Task<List<Addon>>() {
-                        
+
                         @Override
                         protected List<Addon> call() throws Exception {
                             final URL fileURL = getClass().getResource("addon.properties"); // NOI18N.
@@ -254,11 +305,11 @@ public final class AddonPaneController extends FXMLControllerBase {
     final void setAddon(final Addon value) {
         addon.set(value);
     }
-    
+
     final Addon getAddon() {
         return addon.get();
     }
-    
+
     final ObjectProperty<Addon> addonProperty() {
         return addon;
     }
