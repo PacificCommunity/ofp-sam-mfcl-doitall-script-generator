@@ -5,6 +5,7 @@
  ***********************************************************************/
 package org.spc.ofp.mfcl.mfcldoit.task.print;
 
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Window;
@@ -36,8 +37,11 @@ public final class PrintTextParametersBuilder {
     public PrintTextParameters build() {
         final PrintTextParameters result = new PrintTextParameters();
         result.text = text;
-        result.font = font;
         result.textAlignment = textAlignment;
+        result.font = font;
+        result.fill = fill;
+        result.stroke = stroke;
+        result.strokeWidth = strokeWidth;
         result.owner = owner;
         return result;
     }
@@ -54,6 +58,18 @@ public final class PrintTextParametersBuilder {
         return this;
     }
 
+    private TextAlignment textAlignment;
+
+    /**
+     * Sets the text alignment.
+     * @param value The new value.
+     * @return A {@code PrintTextParametersBuilder} instance, never {@code null}.
+     */
+    public PrintTextParametersBuilder textAlignment(final TextAlignment value) {
+        textAlignment = value;
+        return this;
+    }
+
     private Font font;
 
     /**
@@ -65,15 +81,40 @@ public final class PrintTextParametersBuilder {
         font = value;
         return this;
     }
-    private TextAlignment textAlignment;
+
+    private Paint fill;
 
     /**
-     * Sets the text alignment.
+     * Sets the fill.
      * @param value The new value.
      * @return A {@code PrintTextParametersBuilder} instance, never {@code null}.
      */
-    public PrintTextParametersBuilder textAlignment(final TextAlignment value) {
-        textAlignment = value;
+    public PrintTextParametersBuilder fill(final Paint value) {
+        fill = value;
+        return this;
+    }
+
+    private Paint stroke;
+
+    /**
+     * Sets the stroke.
+     * @param value The new value.
+     * @return A {@code PrintTextParametersBuilder} instance, never {@code null}.
+     */
+    public PrintTextParametersBuilder stroke(final Paint value) {
+        stroke = value;
+        return this;
+    }
+
+    private Double strokeWidth;
+
+    /**
+     * Sets the stroke width.
+     * @param value The new value.
+     * @return A {@code PrintTextParametersBuilder} instance, never {@code null}.
+     */
+    public PrintTextParametersBuilder strokeWidth(final Double value) {
+        strokeWidth = value;
         return this;
     }
 

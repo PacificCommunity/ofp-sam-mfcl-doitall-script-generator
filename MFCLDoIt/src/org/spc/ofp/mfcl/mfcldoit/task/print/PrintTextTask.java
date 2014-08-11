@@ -18,13 +18,21 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
 /**
- *
- * @author fabriceb
+ * Tasks used to print simple text.
+ * @author Fabrice Bouyé (fabriceb@spc.int)
  */
 public final class PrintTextTask extends Task<Void> {
 
+    /**
+     * The parameters object.
+     */
     private final PrintTextParameters parameters;
 
+    /**
+     * Creates a new instance.
+     * @param parameters The parameters object.
+     * @throws IllegalArgumentException If {@code parameters} is {@code null} or the text to print is {@code null} or empty.
+     */
     public PrintTextTask(final PrintTextParameters parameters) throws IllegalArgumentException {
         if (parameters == null) {
             throw new IllegalArgumentException("Parameters cannot be null.");
