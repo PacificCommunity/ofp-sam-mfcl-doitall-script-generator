@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Copyright - Secretariat of the Pacific Community                   
+  Droit de copie - Secrétariat Général de la Communauté du Pacifique 
+  http://www.spc.int/                                                
+-->
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="container-pane, dialog" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.spc.ofp.mfcl.mfcldoit.control.about.AboutPaneController">
+    <children>
+        <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <center>
+                <Accordion>
+                    <panes>
+                        <TitledPane fx:id="creditsPane" animated="true" text="%ABOUT_CREDITS_LABEL">
+                            <content>
+                                <AnchorPane />
+                            </content>
+                        </TitledPane>
+                        <TitledPane fx:id="addonsPane" animated="true" text="%ABOUT_LIBRARIES_LABEL">
+                            <content>
+                                <fx:include fx:id="addons" source="AddonPane.fxml" styleClass="container-pane" />
+                            </content>
+                        </TitledPane>
+                    </panes>
+                    <expandedPane>
+                        <fx:reference source="creditsPane"/>
+                    </expandedPane>
+                </Accordion>
+            </center>
+            <bottom>
+                <HBox styleClass="button-box">
+                    <children>
+                        <Button fx:id="okButton" text="%ABOUT_CLOSE_BUTTON" onAction="#handleCloseButton">
+                            <tooltip>
+                                <Tooltip text="%ABOUT_CLOSE_TIP" />
+                            </tooltip>
+                        </Button>
+                    </children>
+                </HBox>
+            </bottom>
+        </BorderPane>
+    </children>
+</AnchorPane>

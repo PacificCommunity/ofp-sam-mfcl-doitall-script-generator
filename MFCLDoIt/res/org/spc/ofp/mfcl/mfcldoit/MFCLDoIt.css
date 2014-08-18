@@ -46,6 +46,9 @@
 .container-pane {
     -fx-padding: 6px;
 }
+.dialog {
+    -fx-background-color: -fx-base;
+}
 .grid-pane {
     -fx-hgap: 6px;
     -fx-vgap: 6px;

@@ -35,6 +35,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import org.spc.ofp.mfcl.mfcldoit.control.FormError;
 import org.spc.ofp.mfcl.mfcldoit.control.FormValidator;
+import org.spc.ofp.mfcl.mfcldoit.control.about.AboutPaneController;
 import org.spc.ofp.mfcl.mfcldoit.control.codeeditor.CodeEditor;
 import org.spc.ofp.mfcl.mfcldoit.control.phase.PhaseEditorController;
 import org.spc.ofp.mfcl.mfcldoit.control.project.ProjectConfigPaneController;
@@ -157,8 +158,32 @@ public final class MainUIController extends FormValidator implements Initializab
     private void handleCreateButton(final ActionEvent actionEvent) {
         exportToFile();
     }
-    ////////////////////////////////////////////////////////////////////////////
 
+    @FXML
+    private void handleHelpButton(final ActionEvent actionEvent) {
+        try {
+            final URL fxmlURL = getClass().getResource("control/about/AboutPane.fxml"); // NOI18N.
+            final FXMLLoader fxmlLoader = new FXMLLoader(fxmlURL, bundle);
+            final Node node = fxmlLoader.load();
+            final AboutPaneController controller = fxmlLoader.getController();
+            controller.applicationProperty().bind(applicationProperty());
+            controller.setOnClose(event -> {
+                rootPane.getChildren().remove(node);
+                AnchorPane.clearConstraints(node);
+                controller.applicationProperty().unbind();
+                controller.dispose();
+            });
+            AnchorPane.setTopAnchor(node, 0d);
+            AnchorPane.setLeftAnchor(node, 0d);
+            AnchorPane.setBottomAnchor(node, 0d);
+            AnchorPane.setRightAnchor(node, 0d);
+            rootPane.getChildren().add(node);
+        } catch (IOException ex) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, ex.getMessage(), ex);
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
     /**
      * Allow to store user preferences.
      */
