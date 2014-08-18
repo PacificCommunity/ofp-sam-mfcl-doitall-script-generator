@@ -5,10 +5,12 @@
  ***********************************************************************/
 package org.spc.ofp.mfcl.mfcldoit.control.project;
 
+import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
@@ -21,8 +23,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.FileChooser;
 import org.spc.ofp.mfcl.mfcldoit.Disposable;
 import org.spc.ofp.mfcl.mfcldoit.control.FormError;
 import org.spc.ofp.mfcl.mfcldoit.control.FormValidator;
@@ -37,6 +40,8 @@ import org.spc.ofp.mfcl.mfcldoit.task.generate.ProjectParametersBuilder;
  */
 public final class ProjectConfigPaneController extends FormValidator implements Initializable, Disposable {
 
+    @FXML
+    private AnchorPane rootPane;
     @FXML
     private ComboBox<String> modelExecutableCombo;
     @FXML
@@ -264,10 +269,22 @@ public final class ProjectConfigPaneController extends FormValidator implements 
     ////////////////////////////////////////////////////////////////////////////
     @FXML
     private void handleFRQBrowseButton(final ActionEvent actionEvent) {
+        final FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter(bundle.getString("GENERAL_FRQ_FILE_DESCRIPTION"), "*.frq"); // NOI18N.       
+        final FileChooser dialog = new FileChooser();
+        dialog.getExtensionFilters().add(filter);
+        dialog.setSelectedExtensionFilter(filter);
+        final Optional<File> fileOptional = Optional.ofNullable(dialog.showOpenDialog(rootPane.getScene().getWindow()));
+        fileOptional.ifPresent(file -> frqFileField.setText(file.getName()));
     }
 
     @FXML
     private void handleINIBrowseButton(final ActionEvent actionEvent) {
+        final FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter(bundle.getString("GENERAL_INI_FILE_DESCRIPTION"), "*.ini"); // NOI18N.        
+        final FileChooser dialog = new FileChooser();
+        dialog.getExtensionFilters().add(filter);
+        dialog.setSelectedExtensionFilter(filter);
+        final Optional<File> fileOptional = Optional.ofNullable(dialog.showOpenDialog(rootPane.getScene().getWindow()));
+        fileOptional.ifPresent(file -> iniFileField.setText(file.getName()));
     }
 
     ////////////////////////////////////////////////////////////////////////////
