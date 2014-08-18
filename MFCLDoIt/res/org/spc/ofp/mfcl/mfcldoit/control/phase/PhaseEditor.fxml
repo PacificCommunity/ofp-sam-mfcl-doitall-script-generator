@@ -14,33 +14,36 @@
 
 <AnchorPane id="AnchorPane" fx:id="" prefHeight="400.0" prefWidth="200" styleClass="container-pane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.spc.ofp.mfcl.mfcldoit.control.phase.PhaseEditorController">
     <children>
-        <Accordion layoutX="85.0" layoutY="114.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <Accordion fx:id="rootAccordion" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <panes>
-                <TitledPane animated="true" expanded="true" text="%PHASE_SETTINGS_LABEL">
-                    <content>
-                        <AnchorPane styleClass="container-pane">
-                            <children>
-                                <Accordion layoutX="85.0" layoutY="114.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                    <panes>
-                                        <TitledPane animated="true" text="%PHASE_PAREST_FLAGS_LABEL" />
-                                        <TitledPane animated="true" text="%PHASE_AGE_FLAGS_LABEL" />
-                                        <TitledPane animated="true" expanded="true" text="%PHASE_FISH_FLAGS_LABEL">
-                                            <content>
-                                                <fx:include fx:id="fishFlagsEditor" source="FishFlagsEditor.fxml" />
-                                            </content>
-                                        </TitledPane>                            
-                                        <TitledPane animated="true" text="%PHASE_REGION_FLAGS_LABEL" />
-                                        <TitledPane animated="true" text="%PHASE_TAG_FLAGS_LABEL" />
-                                    </panes>
-                                </Accordion>
-                            </children>
-                        </AnchorPane>
-                    </content>
-                </TitledPane>
                 <TitledPane fx:id="preActionsPane" animated="true" text="%PRE_ACTIONS_LABEL">
                <content>
                   <fx:include fx:id="preActionsEditor"  styleClass="container-pane" source="../action/ActionsEditor.fxml" />
                </content>
+                </TitledPane>
+                <TitledPane fx:id="settingsPane" animated="true" expanded="true" text="%PHASE_SETTINGS_LABEL">
+                    <content>
+                        <AnchorPane styleClass="container-pane">
+                            <children>
+                                <Accordion fx:id="settingsAccordion" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <panes>
+                                        <TitledPane fx:id="parestFlagsPane" animated="true" text="%PHASE_PAREST_FLAGS_LABEL" />
+                                        <TitledPane fx:id="ageFlagsPane" animated="true" text="%PHASE_AGE_FLAGS_LABEL" />
+                                        <TitledPane fx:id="fishFlagsPane" animated="true" expanded="true" text="%PHASE_FISH_FLAGS_LABEL">
+                                            <content>
+                                                <fx:include fx:id="fishFlagsEditor" source="FishFlagsEditor.fxml" />
+                                            </content>
+                                        </TitledPane>                            
+                                        <TitledPane fx:id="regionFlagsPane" animated="true" text="%PHASE_REGION_FLAGS_LABEL" />
+                                        <TitledPane fx:id="tagFlagsPane" animated="true" text="%PHASE_TAG_FLAGS_LABEL" />
+                                    </panes>
+                                    <expandedPane>  
+                                        <fx:reference source="fishFlagsPane" />
+                                    </expandedPane>
+                                </Accordion>
+                            </children>
+                        </AnchorPane>
+                    </content>
                 </TitledPane>
                 <TitledPane fx:id="postActionsPane" animated="true" text="%POST_ACTIONS_LABEL">
                <content>
@@ -48,6 +51,9 @@
                </content>
                 </TitledPane>
             </panes>
+            <expandedPane> 
+                <fx:reference source="settingsPane" />
+            </expandedPane>
         </Accordion>
     </children>
 </AnchorPane>

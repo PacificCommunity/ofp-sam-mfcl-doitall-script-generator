@@ -5,10 +5,15 @@
  ***********************************************************************/
 package org.spc.ofp.mfcl.mfcldoit.control.phase;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -17,10 +22,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import org.spc.ofp.mfcl.mfcldoit.Disposable;
 import org.spc.ofp.mfcl.mfcldoit.control.FormValidator;
 import org.spc.ofp.mfcl.mfcldoit.flag.FishFlag;
 import org.spc.ofp.mfcl.mfcldoit.flag.Fishery;
@@ -41,11 +44,26 @@ public final class FishFlagsEditorController extends FormValidator {
      * Creates a new instance.
      */
     public FishFlagsEditorController() {
+        // Load flag definitions.
+        final URL propertiesURL = getClass().getResource("FishFlagsEditor.properties"); // NOI18N.
+        try (final InputStream input = propertiesURL.openStream()) {
+            final Properties properties = new Properties();
+            properties.load(input);
+            final String supportedFlagStr = properties.getProperty("supported.flags"); // NOI18N.
+            for (String flagID : supportedFlagStr.split(", ")) { // NOI18N.
+                
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(FishFlagsEditorController.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+        }
     }
 
     @Override
     public void dispose() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+        } finally {
+            super.dispose();
+        }
     }
 
     /**

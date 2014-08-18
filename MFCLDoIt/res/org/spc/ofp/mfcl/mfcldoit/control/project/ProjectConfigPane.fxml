@@ -12,59 +12,76 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" fx:id="rootPane" styleClass="container-pane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.spc.ofp.mfcl.mfcldoit.control.project.ProjectConfigPaneController">
-   <children>
-      <GridPane fx:id="gridPane" layoutX="157.0" layoutY="129.0" styleClass="grid-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <columnConstraints>
-          <ColumnConstraints hgrow="NEVER" />
-          <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="NEVER" />
-        </columnConstraints>
-        <rowConstraints>
-            <RowConstraints vgrow="NEVER" />
-            <RowConstraints vgrow="NEVER" />
-            <RowConstraints vgrow="NEVER" />
-            <RowConstraints vgrow="NEVER" />
-            <RowConstraints vgrow="NEVER" />
-            <RowConstraints vgrow="ALWAYS" />
-            <RowConstraints vgrow="NEVER" />
-            <RowConstraints vgrow="NEVER" />
-            <RowConstraints vgrow="NEVER" />
-            <RowConstraints vgrow="NEVER" />
-            <RowConstraints vgrow="NEVER" />
-            <RowConstraints vgrow="NEVER" />
-            <RowConstraints vgrow="NEVER" />
-            <RowConstraints vgrow="ALWAYS" />
-        </rowConstraints>
-         <children>
-            <Label fx:id="modelLabel" styleClass="h1" text="%MODEL_LABEL" GridPane.columnSpan="2147483647" />
-            <Label fx:id="modelExecutableLabel" text="%MODEL_NAME_LABEL" GridPane.rowIndex="1" />
-            <ComboBox fx:id="modelExecutableCombo" editable="true" maxWidth="1.7976931348623157E308" promptText="%MODEL_NAME_PROMPT" visibleRowCount="5" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
-            <CheckBox fx:id="modelRelativePathCheck" mnemonicParsing="false" text="%MODEL_USE_RELATIVE_PATH_LABEL" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
-            <Label fx:id="frqFileLabel" text="%GENERAL_FRQ_FILE_LABEL" GridPane.rowIndex="3" />
-            <TextField fx:id="frqFileField" promptText="%GENERAL_FRQ_FILE_PROMPT" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <Button fx:id="frqFileBrowseButton" mnemonicParsing="false" onAction="#handleFRQBrowseButton" text="%BROWSE_LABEL" GridPane.columnIndex="2" GridPane.rowIndex="3">
-               <tooltip>
-                  <Tooltip fx:id="frqFileBrowseTip" text="%GENERAL_FRQ_FILE_BROWSE_TIP" />
-               </tooltip>
-            </Button>
-            <Label fx:id="preActionsLabel" styleClass="h1" text="%PRE_ACTIONS_LABEL" GridPane.rowIndex="4" />
-            <fx:include fx:id="preActionsEditor" source="../action/ActionsEditor.fxml" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" />
-            <Label fx:id="phaseLabel" styleClass="h1" text="%PHASES_LABEL" GridPane.columnSpan="2147483647" GridPane.rowIndex="6" />
-            <CheckBox fx:id="makeParCheck" mnemonicParsing="false" selected="true" text="%GENERAL_MAKE_PAR_LABEL" GridPane.columnSpan="2147483647" GridPane.rowIndex="7" />
-            <Label fx:id="iniFileLabel" text="%GENERAL_INI_FILE_LABEL" GridPane.rowIndex="8" />
-            <TextField fx:id="iniFileField" promptText="%GENERAL_INI_FILE_PROMPT" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-            <Button fx:id="iniFileBrowseButton" mnemonicParsing="false" onAction="#handleINIBrowseButton" text="%BROWSE_LABEL" GridPane.columnIndex="2" GridPane.rowIndex="9">
-               <tooltip>
-                  <Tooltip fx:id="iniFileBrowseTip" text="%GENERAL_INI_FILE_BROWSE_TIP" />
-               </tooltip>
-            </Button>
-            <Label fx:id="phaseNumberLabel" text="%PHASE_NUMBER_LABEL" GridPane.rowIndex="10" />
-            <TextField fx:id="phaseNumberField" promptText="%PHASE_NUMBER_PROMPT" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="10" />
-            <CheckBox fx:id="includePhaseHeadersCheck" mnemonicParsing="false" selected="true" text="%GENERAL_INCLUDE_HEADER_LABEL" GridPane.columnSpan="2147483647" GridPane.rowIndex="11" />
-            <Label fx:id="postActionsLabel" styleClass="h1" text="%POST_ACTIONS_LABEL" GridPane.rowIndex="12" />
-            <fx:include fx:id="postActionsEditor" source="../action/ActionsEditor.fxml" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="13" />
-         </children>
-      </GridPane>
-   </children>
+<AnchorPane prefHeight="400.0" id="AnchorPane" fx:id="rootPane" styleClass="container-pane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.spc.ofp.mfcl.mfcldoit.control.project.ProjectConfigPaneController">
+    <children>
+        <Accordion fx:id="rootAccordion" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <panes>
+                <TitledPane fx:id="preActionsPane" animated="true" text="%PRE_ACTIONS_LABEL">
+                    <content>
+                        <fx:include fx:id="preActionsEditor"  styleClass="container-pane" source="../action/ActionsEditor.fxml" />
+                    </content>
+                </TitledPane>
+                <TitledPane fx:id="settingsPane" animated="true" expanded="true" text="%GENERAL_SETTINGS_LABEL">
+                    <content>
+                        <AnchorPane styleClass="container-pane">
+                            <children>
+                                <GridPane fx:id="gridPane" styleClass="grid-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <columnConstraints>
+                                        <ColumnConstraints hgrow="NEVER" />
+                                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+                                        <ColumnConstraints hgrow="NEVER" />
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints vgrow="NEVER" />
+                                        <RowConstraints vgrow="NEVER" />
+                                        <RowConstraints vgrow="NEVER" />
+                                        <RowConstraints vgrow="NEVER" />
+                                        <RowConstraints vgrow="NEVER" />
+                                        <RowConstraints vgrow="NEVER" />
+                                        <RowConstraints vgrow="NEVER" />
+                                        <RowConstraints vgrow="NEVER" />
+                                        <RowConstraints vgrow="NEVER" />
+                                        <RowConstraints vgrow="NEVER" />
+                                    </rowConstraints>
+                                    <children>
+                                        <Label fx:id="modelLabel" styleClass="h1" text="%MODEL_LABEL" GridPane.columnSpan="2147483647" />
+                                        <Label fx:id="modelExecutableLabel" text="%MODEL_NAME_LABEL" GridPane.rowIndex="1" />
+                                        <ComboBox fx:id="modelExecutableCombo" editable="true" maxWidth="1.7976931348623157E308" promptText="%MODEL_NAME_PROMPT" visibleRowCount="5" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
+                                        <CheckBox fx:id="modelRelativePathCheck" mnemonicParsing="false" text="%MODEL_USE_RELATIVE_PATH_LABEL" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
+                                        <Label fx:id="frqFileLabel" text="%GENERAL_FRQ_FILE_LABEL" GridPane.rowIndex="3" />
+                                        <TextField fx:id="frqFileField" promptText="%GENERAL_FRQ_FILE_PROMPT" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                        <Button fx:id="frqFileBrowseButton" mnemonicParsing="false" onAction="#handleFRQBrowseButton" text="%BROWSE_LABEL" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                                            <tooltip>
+                                                <Tooltip fx:id="frqFileBrowseTip" text="%GENERAL_FRQ_FILE_BROWSE_TIP" />
+                                            </tooltip>
+                                        </Button>
+                                        <Label fx:id="phaseLabel" styleClass="h1" text="%PHASES_LABEL" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
+                                        <CheckBox fx:id="makeParCheck" mnemonicParsing="false" selected="true" text="%GENERAL_MAKE_PAR_LABEL" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
+                                        <Label fx:id="iniFileLabel" text="%GENERAL_INI_FILE_LABEL" GridPane.rowIndex="6" />
+                                        <TextField fx:id="iniFileField" promptText="%GENERAL_INI_FILE_PROMPT" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                        <Button fx:id="iniFileBrowseButton" mnemonicParsing="false" onAction="#handleINIBrowseButton" text="%BROWSE_LABEL" GridPane.columnIndex="2" GridPane.rowIndex="7">
+                                            <tooltip>
+                                                <Tooltip fx:id="iniFileBrowseTip" text="%GENERAL_INI_FILE_BROWSE_TIP" />
+                                            </tooltip>
+                                        </Button>
+                                        <Label fx:id="phaseNumberLabel" text="%PHASE_NUMBER_LABEL" GridPane.rowIndex="8" />
+                                        <TextField fx:id="phaseNumberField" promptText="%PHASE_NUMBER_PROMPT" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="8" />
+                                        <CheckBox fx:id="includePhaseHeadersCheck" mnemonicParsing="false" selected="true" text="%GENERAL_INCLUDE_HEADER_LABEL" GridPane.columnSpan="2147483647" GridPane.rowIndex="9" />
+                                    </children>
+                                </GridPane>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </TitledPane>
+                <TitledPane fx:id="postActionsPane" animated="true" text="%POST_ACTIONS_LABEL">
+                    <content>
+                        <fx:include fx:id="postActionsEditor" styleClass="container-pane" source="../action/ActionsEditor.fxml" />
+                    </content>
+                </TitledPane>
+            </panes>
+            <expandedPane> 
+                <fx:reference source="settingsPane" />
+            </expandedPane>
+        </Accordion>       
+    </children>
 </AnchorPane>

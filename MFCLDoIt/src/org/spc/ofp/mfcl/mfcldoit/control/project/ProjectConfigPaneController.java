@@ -141,17 +141,20 @@ public final class ProjectConfigPaneController extends FormValidator implements 
         iniFileField.disableProperty().bind(makeParCheck.selectedProperty().not());
         //
         iniFileBrowseButton.disableProperty().bind(makeParCheck.selectedProperty().not());
-        //
+        // Pre-actions.
         preActionsEditorController.setFlavor(Flavor.PRE_SCRIPT_ACTIONS);
+        preActionsEditorController.setIncludeHeader(prefs.getBoolean("include.pre.script.actions.header", true)); // NOI18N.
         preActionsEditorController.actionsProperty().addListener(invalidationListener);
         preActionsEditorController.includeHeaderProperty().addListener(invalidationListener);
-        //
+        // Post-actions.
         postActionsEditorController.setFlavor(Flavor.POST_SCRIPT_ACTIONS);
         postActionsEditorController.actionsProperty().addListener(invalidationListener);
+        postActionsEditorController.setIncludeHeader(prefs.getBoolean("include.post.script.actions.header", true)); // NOI18N.
         postActionsEditorController.includeHeaderProperty().addListener(invalidationListener);
         //
         phaseNumberField.textProperty().addListener(invalidationListener);
         //
+        includePhaseHeadersCheck.setSelected(prefs.getBoolean("include.phase.header", true)); // NOI18N.
         includePhaseHeadersCheck.selectedProperty().addListener(invalidationListener);
         //
         makeParCheck.selectedProperty().addListener(invalidationListener);
@@ -236,17 +239,21 @@ public final class ProjectConfigPaneController extends FormValidator implements 
             phaseNumberField.getStyleClass().add(ERROR_STYLE_CLASSS);
         }
         parametersBuilder.phaseNumber(phaseNumber);
+        // Phase header.
         final boolean includePhaseHeaders = includePhaseHeadersCheck.isSelected();
+        prefs.putBoolean("include.phase.header", includePhaseHeaders); // NOI18N.
         parametersBuilder.includePhaseHeaders(includePhaseHeaders);
         // Pre-actions.
         final String preActions = preActionsEditorController.getActions();
         parametersBuilder.preActions(preActions);
         final boolean includePreActionsHeader = preActionsEditorController.isIncludeHeader();
+        prefs.putBoolean("include.pre.script.actions.header", includePreActionsHeader); // NOI18N.
         parametersBuilder.includePreActionsHeader(includePreActionsHeader);
         // Post-actions.
         final String postActions = postActionsEditorController.getActions();
         parametersBuilder.postActions(postActions);
         final boolean includePostActionsHeader = postActionsEditorController.isIncludeHeader();
+        prefs.putBoolean("include.post.script.actions.header", includePostActionsHeader); // NOI18N.
         parametersBuilder.includePostActionsHeader(includePostActionsHeader);
         //
         parameters.set(parametersBuilder.build());
