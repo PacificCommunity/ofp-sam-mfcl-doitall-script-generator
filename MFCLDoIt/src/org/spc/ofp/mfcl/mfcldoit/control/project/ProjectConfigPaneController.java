@@ -235,12 +235,12 @@ public final class ProjectConfigPaneController extends FormValidator implements 
             final String text = phaseNumberField.getText();
             phaseNumber = Integer.parseInt(text);
             if (phaseNumber <= 0) {
-                allErrors.add(new FormError(bundle.getString("ERROR_PHASE_NUMBER_INVALID_MESSAGE"), modelExecutableCombo)); // NOI18N.
+                allErrors.add(new FormError(bundle.getString("ERROR_PHASE_NUMBER_INVALID_MESSAGE"), phaseNumberField)); // NOI18N.
                 phaseNumberField.getStyleClass().add(ERROR_STYLE_CLASSS);
             }
         } catch (Exception ex) {
             // @todo Log this.
-            allErrors.add(new FormError(bundle.getString("ERROR_PHASE_NUMBER_NOT_AN_INT_MESSAGE"), modelExecutableCombo)); // NOI18N.
+            allErrors.add(new FormError(bundle.getString("ERROR_PHASE_NUMBER_NOT_AN_INT_MESSAGE"), phaseNumberField)); // NOI18N.
             phaseNumberField.getStyleClass().add(ERROR_STYLE_CLASSS);
         }
         parametersBuilder.phaseNumber(phaseNumber);
