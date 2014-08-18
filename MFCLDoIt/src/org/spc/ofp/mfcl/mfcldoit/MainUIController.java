@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javafx.beans.InvalidationListener;
+import javafx.beans.binding.Bindings;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -37,6 +38,7 @@ import org.spc.ofp.mfcl.mfcldoit.control.FormError;
 import org.spc.ofp.mfcl.mfcldoit.control.FormValidator;
 import org.spc.ofp.mfcl.mfcldoit.control.about.AboutPaneController;
 import org.spc.ofp.mfcl.mfcldoit.control.codeeditor.CodeEditor;
+import org.spc.ofp.mfcl.mfcldoit.control.error.ErrorPaneController;
 import org.spc.ofp.mfcl.mfcldoit.control.phase.PhaseEditorController;
 import org.spc.ofp.mfcl.mfcldoit.control.project.ProjectConfigPaneController;
 import org.spc.ofp.mfcl.mfcldoit.task.export.ExportFileParameters;
@@ -67,6 +69,11 @@ public final class MainUIController extends FormValidator implements Initializab
     private Button pathButton;
     @FXML
     private Button exportButton;
+    @FXML
+    private Node errorPane;
+    @FXML
+    private ErrorPaneController errorPaneController;
+
     /**
      * Display the code on screen.
      */
@@ -78,6 +85,7 @@ public final class MainUIController extends FormValidator implements Initializab
      * Creates a new instance.
      */
     public MainUIController() {
+        super();
     }
 
     @Override
@@ -102,6 +110,16 @@ public final class MainUIController extends FormValidator implements Initializab
                 pathField.textProperty().removeListener(invalidationListener);
                 pathField = null;
             }
+            if (errorPane != null) {
+                errorPane.visibleProperty().unbind();
+                errorPane.managedProperty().unbind();
+                errorPane = null;
+            }
+            if (errorPaneController != null) {
+                errorPaneController.setErrors(null);
+                errorPaneController.dispose();
+                errorPaneController = null;
+            }
             previewVBox.getChildren().remove(codeEditor);
             VBox.clearConstraints(codeEditor);
             codeEditor.dispose();
@@ -114,8 +132,13 @@ public final class MainUIController extends FormValidator implements Initializab
     public void initialize(final URL url, final ResourceBundle bundle) {
         this.bundle = bundle;
         //
+        errorPane.visibleProperty().bind(Bindings.isNotEmpty(errors));
+        errorPane.managedProperty().bind(errorPane.visibleProperty());
+        //
+        errorPaneController.setErrors(errors);
+        //
         VBox.setVgrow(codeEditor, Priority.ALWAYS);
-        previewVBox.getChildren().add(codeEditor);
+        previewVBox.getChildren().add(1, codeEditor);
         //
         projectConfigPaneController.applicationProperty().bind(applicationProperty());
         projectConfigPaneController.formValidProperty().addListener(invalidationListener);
@@ -137,6 +160,10 @@ public final class MainUIController extends FormValidator implements Initializab
     private final InvalidationListener invalidationListener = observable -> requestValidateForm();
 
     ////////////////////////////////////////////////////////////////////////////
+    
+    /**
+    * Called whenever the browse button is clicked.
+    */
     @FXML
     private void handleBrowseButton(final ActionEvent actionEvent) {
         final String lastPath = prefs.get("last.file", ""); // NOI18N.
@@ -153,12 +180,18 @@ public final class MainUIController extends FormValidator implements Initializab
             prefs.put("last.file", filePath); // NOI18N.            
         }
     }
-
+    
+    /**
+    * Called whenever the create button is clicked.
+    */
     @FXML
     private void handleCreateButton(final ActionEvent actionEvent) {
         exportToFile();
     }
 
+    /**
+    * Called whenever the help button is clicked.
+    */
     @FXML
     private void handleHelpButton(final ActionEvent actionEvent) {
         try {
