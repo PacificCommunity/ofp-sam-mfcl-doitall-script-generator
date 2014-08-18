@@ -39,7 +39,7 @@ public final class ActionsEditorController extends FXMLControllerBase implements
     public void dispose() {
         try {
             if (textArea != null) {
-                textArea.textProperty().unbindBidirectional(actionsProperty());
+                actionsProperty().unbindBidirectional(textArea.textProperty());
                 textArea.promptTextProperty().unbind();
                 textArea.setTooltip(null);
                 textArea = null;
@@ -92,7 +92,7 @@ public final class ActionsEditorController extends FXMLControllerBase implements
             }
         };
         //
-        textArea.textProperty().bindBidirectional(actionsProperty());
+        actionsProperty().bindBidirectional(textArea.textProperty());
         textArea.promptTextProperty().bind(promptTextBinding);
         //
         textTip.textProperty().bind(promptTextBinding);
