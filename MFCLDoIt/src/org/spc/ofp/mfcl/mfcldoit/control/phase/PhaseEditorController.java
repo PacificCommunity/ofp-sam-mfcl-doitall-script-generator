@@ -9,10 +9,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.InvalidationListener;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.TextArea;
-import org.spc.ofp.mfcl.mfcldoit.Disposable;
 import org.spc.ofp.mfcl.mfcldoit.control.FormValidator;
+import org.spc.ofp.mfcl.mfcldoit.control.action.ActionsEditorController;
+import org.spc.ofp.mfcl.mfcldoit.control.action.Flavor;
 
 /**
  * FXML Controller class
@@ -23,9 +22,9 @@ public final class PhaseEditorController extends FormValidator {
     @FXML
     private FishFlagsEditorController fishFlagsEditorController;
     @FXML
-    private TextArea preActionsArea;
+    private ActionsEditorController preActionsEditorController;
     @FXML
-    private TextArea postActionsArea;
+    private ActionsEditorController postActionsEditorController;
 
     /**
      * Creates a new instance.
@@ -35,13 +34,21 @@ public final class PhaseEditorController extends FormValidator {
 
     @Override
     public void dispose() {
-        if (preActionsArea != null) {
-            preActionsArea.textProperty().addListener(valueInvalidationListener);
-            preActionsArea = null;
-        }
-        if (postActionsArea != null) {
-            postActionsArea.textProperty().addListener(valueInvalidationListener);
-            postActionsArea = null;
+        try {
+            if (preActionsEditorController != null) {
+                preActionsEditorController.actionsProperty().removeListener(valueInvalidationListener);
+                preActionsEditorController.includeHeaderProperty().removeListener(valueInvalidationListener);
+                preActionsEditorController.dispose();
+                preActionsEditorController = null;
+            }
+            if (postActionsEditorController != null) {
+                postActionsEditorController.actionsProperty().removeListener(valueInvalidationListener);
+                postActionsEditorController.includeHeaderProperty().removeListener(valueInvalidationListener);
+                postActionsEditorController.dispose();
+                postActionsEditorController = null;
+            }
+        } finally {
+            super.dispose();
         }
     }
 
@@ -50,13 +57,17 @@ public final class PhaseEditorController extends FormValidator {
      */
     @Override
     public void initialize(final URL url, final ResourceBundle bundle) {
-        preActionsArea.textProperty().addListener(valueInvalidationListener);
-        postActionsArea.textProperty().addListener(valueInvalidationListener);
+        preActionsEditorController.setFlavor(Flavor.PRE_PHASE_ACTIONS);
+        preActionsEditorController.actionsProperty().addListener(valueInvalidationListener);
+        preActionsEditorController.includeHeaderProperty().addListener(valueInvalidationListener);
+        //
+        postActionsEditorController.setFlavor(Flavor.POST_PHASE_ACTIONS);
+        postActionsEditorController.actionsProperty().addListener(valueInvalidationListener);
+        postActionsEditorController.includeHeaderProperty().addListener(valueInvalidationListener);
     }
 
     ////////////////////////////////////////////////////////////////////////////
-    private final InvalidationListener valueInvalidationListener = observable -> {
-    };
+    private final InvalidationListener valueInvalidationListener = observable -> requestValidateForm();
 
     ////////////////////////////////////////////////////////////////////////////
     @Override

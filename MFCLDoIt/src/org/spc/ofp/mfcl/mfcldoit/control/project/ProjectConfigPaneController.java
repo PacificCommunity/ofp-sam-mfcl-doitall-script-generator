@@ -26,6 +26,8 @@ import javafx.scene.control.TextField;
 import org.spc.ofp.mfcl.mfcldoit.Disposable;
 import org.spc.ofp.mfcl.mfcldoit.control.FormError;
 import org.spc.ofp.mfcl.mfcldoit.control.FormValidator;
+import org.spc.ofp.mfcl.mfcldoit.control.action.ActionsEditorController;
+import org.spc.ofp.mfcl.mfcldoit.control.action.Flavor;
 import org.spc.ofp.mfcl.mfcldoit.task.generate.ProjectParameters;
 import org.spc.ofp.mfcl.mfcldoit.task.generate.ProjectParametersBuilder;
 
@@ -50,17 +52,13 @@ public final class ProjectConfigPaneController extends FormValidator implements 
     @FXML
     private TextField phaseNumberField;
     @FXML
-    private TextArea preActionsArea;
-    @FXML
-    private TextArea postActionsArea;
-    @FXML
     private CheckBox makeParCheck;
     @FXML
     private CheckBox includePhaseHeadersCheck;
     @FXML
-    private CheckBox includePreActionsHeaderCheck;
+    private ActionsEditorController preActionsEditorController;
     @FXML
-    private CheckBox includePostActionsHeaderCheck;
+    private ActionsEditorController postActionsEditorController;
 
     /**
      * Creates a new instance.
@@ -92,13 +90,17 @@ public final class ProjectConfigPaneController extends FormValidator implements 
                 iniFileBrowseButton.disableProperty().unbind();
                 iniFileBrowseButton = null;
             }
-            if (preActionsArea != null) {
-                preActionsArea.textProperty().removeListener(invalidationListener);
-                preActionsArea = null;
+            if (preActionsEditorController != null) {
+                preActionsEditorController.actionsProperty().removeListener(invalidationListener);
+                preActionsEditorController.includeHeaderProperty().removeListener(invalidationListener);
+                preActionsEditorController.dispose();
+                preActionsEditorController = null;
             }
-            if (postActionsArea != null) {
-                postActionsArea.textProperty().removeListener(invalidationListener);
-                postActionsArea = null;
+            if (postActionsEditorController != null) {
+                postActionsEditorController.actionsProperty().removeListener(invalidationListener);
+                postActionsEditorController.includeHeaderProperty().removeListener(invalidationListener);
+                postActionsEditorController.dispose();
+                postActionsEditorController = null;
             }
             if (phaseNumberField != null) {
                 phaseNumberField.textProperty().removeListener(invalidationListener);
@@ -107,14 +109,6 @@ public final class ProjectConfigPaneController extends FormValidator implements 
             if (includePhaseHeadersCheck != null) {
                 includePhaseHeadersCheck.selectedProperty().removeListener(invalidationListener);
                 includePhaseHeadersCheck = null;
-            }
-            if (includePreActionsHeaderCheck != null) {
-                includePreActionsHeaderCheck.selectedProperty().removeListener(invalidationListener);
-                includePreActionsHeaderCheck = null;
-            }
-            if (includePostActionsHeaderCheck != null) {
-                includePostActionsHeaderCheck.selectedProperty().removeListener(invalidationListener);
-                includePostActionsHeaderCheck = null;
             }
             if (makeParCheck != null) {
                 makeParCheck.selectedProperty().removeListener(invalidationListener);
@@ -148,17 +142,17 @@ public final class ProjectConfigPaneController extends FormValidator implements 
         //
         iniFileBrowseButton.disableProperty().bind(makeParCheck.selectedProperty().not());
         //
-        preActionsArea.textProperty().addListener(invalidationListener);
+        preActionsEditorController.setFlavor(Flavor.PRE_SCRIPT_ACTIONS);
+        preActionsEditorController.actionsProperty().addListener(invalidationListener);
+        preActionsEditorController.includeHeaderProperty().addListener(invalidationListener);
         //
-        postActionsArea.textProperty().addListener(invalidationListener);
+        postActionsEditorController.setFlavor(Flavor.POST_SCRIPT_ACTIONS);
+        postActionsEditorController.actionsProperty().addListener(invalidationListener);
+        postActionsEditorController.includeHeaderProperty().addListener(invalidationListener);
         //
         phaseNumberField.textProperty().addListener(invalidationListener);
         //
         includePhaseHeadersCheck.selectedProperty().addListener(invalidationListener);
-        //
-        includePreActionsHeaderCheck.selectedProperty().addListener(invalidationListener);
-        //
-        includePostActionsHeaderCheck.selectedProperty().addListener(invalidationListener);
         //
         makeParCheck.selectedProperty().addListener(invalidationListener);
         // This will initialize the very first parameter object. 
@@ -245,14 +239,14 @@ public final class ProjectConfigPaneController extends FormValidator implements 
         final boolean includePhaseHeaders = includePhaseHeadersCheck.isSelected();
         parametersBuilder.includePhaseHeaders(includePhaseHeaders);
         // Pre-actions.
-        final String preActions = preActionsArea.getText();
+        final String preActions = preActionsEditorController.getActions();
         parametersBuilder.preActions(preActions);
-        final boolean includePreActionsHeader = includePreActionsHeaderCheck.isSelected();
+        final boolean includePreActionsHeader = preActionsEditorController.isIncludeHeader();
         parametersBuilder.includePreActionsHeader(includePreActionsHeader);
         // Post-actions.
-        final String postActions = postActionsArea.getText();
+        final String postActions = postActionsEditorController.getActions();
         parametersBuilder.postActions(postActions);
-        final boolean includePostActionsHeader = includePostActionsHeaderCheck.isSelected();
+        final boolean includePostActionsHeader = postActionsEditorController.isIncludeHeader();
         parametersBuilder.includePostActionsHeader(includePostActionsHeader);
         //
         parameters.set(parametersBuilder.build());

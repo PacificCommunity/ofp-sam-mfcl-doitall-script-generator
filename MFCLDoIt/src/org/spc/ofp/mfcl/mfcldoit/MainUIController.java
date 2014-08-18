@@ -164,7 +164,7 @@ public final class MainUIController extends FormValidator implements Initializab
      */
     private final Preferences prefs = Preferences.userNodeForPackage(getClass());
     /**
-     * Controllerss for each phase.
+     * Controllers for each phase.
      */
     private final Map<Number, PhaseEditorController> phaseControllers = new HashMap<>();
 
