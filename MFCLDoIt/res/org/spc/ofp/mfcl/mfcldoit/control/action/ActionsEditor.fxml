@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Copyright - Secretariat of the Pacific Community                   
+  Droit de copie - Secrétariat Général de la Communauté du Pacifique 
+  http://www.spc.int/                                                
+-->
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefWidth="200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.spc.ofp.mfcl.mfcldoit.control.action.ActionsEditorController">
+   <children>
+      <VBox styleClass="vbox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <TextArea fx:id="textArea" promptText="%ACTION_PRE_SCRIPT_ACTIONS_PROMPT" VBox.vgrow="ALWAYS">
+               <tooltip>
+                  <Tooltip fx:id="textTip" text="%ACTION_PRE_SCRIPT_ACTIONS_PROMPT" />
+               </tooltip></TextArea>
+            <CheckBox fx:id="includeHeaderCheck" mnemonicParsing="false" text="%ACTION_INCLUDE_HEADER_LABEL" />
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
