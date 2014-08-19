@@ -14,6 +14,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import org.spc.ofp.mfcl.mfcldoit.Disposable;
 import org.spc.ofp.mfcl.mfcldoit.FXMLControllerBase;
 
@@ -22,7 +23,12 @@ import org.spc.ofp.mfcl.mfcldoit.FXMLControllerBase;
  * @author Fabrice Bouyé (fabriceb@spc.int)
  */
 public final class AboutPaneController extends FXMLControllerBase implements Initializable, Disposable {
-
+    @FXML
+    private Label titleLabel;
+    @FXML
+    private Label versionLabel;
+    @FXML
+    private Label copyrightLabel;
     @FXML
     private AddonPaneController addonsController;
 
