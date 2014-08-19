@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Copyright - Secretariat of the Pacific Community                   
+  Droit de copie - Secrétariat Général de la Communauté du Pacifique 
+  http://www.spc.int/                                                
+-->
+
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="container-pane, dialog" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.spc.ofp.project.mfcl.doit.control.about.AboutPaneController">
+    <children>
+        <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <bottom>
+                <HBox styleClass="button-box">
+                    <children>
+                        <Button fx:id="okButton" onAction="#handleCloseButton" text="%ABOUT_CLOSE_BUTTON">
+                            <tooltip>
+                                <Tooltip text="%ABOUT_CLOSE_TIP" />
+                            </tooltip>
+                        </Button>
+                    </children>
+                </HBox>
+            </bottom>
+            <center>
+                <GridPane styleClass="grid-pane" BorderPane.alignment="CENTER">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="NEVER" />
+                        <ColumnConstraints hgrow="ALWAYS" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints vgrow="NEVER" />
+                        <RowConstraints vgrow="NEVER" />
+                        <RowConstraints vgrow="NEVER" />
+                        <RowConstraints vgrow="NEVER" />
+                        <RowConstraints vgrow="ALWAYS" />
+                    </rowConstraints>
+                    <children>
+                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.rowSpan="4" />
+                        <Label fx:id="titleLabel" styleClass="h1" text="%APP_TITLE" GridPane.columnIndex="1" />
+                        <Label fx:id="versionLabel" styleClass="h2" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label fx:id="copyrightLabel" text="%COPYRIGHT_LABEL" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Accordion GridPane.columnSpan="2147483647" GridPane.rowIndex="4">
+                            <panes>
+                                <TitledPane fx:id="creditsPane" animated="true" text="%ABOUT_CREDITS_LABEL">
+                                    <content>
+                                        <AnchorPane />
+                                    </content>
+                                </TitledPane>
+                                <TitledPane fx:id="addonsPane" animated="true" text="%ABOUT_LIBRARIES_LABEL">
+                                    <content>
+                                        <fx:include fx:id="addons" source="AddonPane.fxml" styleClass="container-pane" />
+                                    </content>
+                                </TitledPane>
+                                <TitledPane fx:id="systemPropertiesPane" animated="true" text="%ABOUT_SYSTEM_PROPERTIES_LABEL">
+                                    <content>
+                                        <AnchorPane>
+                                            <children>
+                                                <TableView fx:id="systemPropertiesTable" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                    <columns>
+                                                        <TableColumn fx:id="systemKeyColumn" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" text="%ABOUT_SYSTEM_PROPERTIES_KEY_LABEL" />
+                                                        <TableColumn fx:id="systemValueColumn" prefWidth="75.0" text="%ABOUT_SYSTEM_PROPERTIES_VALUE_LABEL" />
+                                                    </columns>
+                                                    <columnResizePolicy>
+                                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                                    </columnResizePolicy>
+                                                </TableView>
+                                            </children>
+                                        </AnchorPane>
+                                    </content>
+                                </TitledPane>                              
+                            </panes>
+                            <expandedPane>
+                                <fx:reference source="creditsPane"/>
+                            </expandedPane>
+                        </Accordion>
+                    </children>
+                </GridPane>
+            </center>
+        </BorderPane>
+    </children>
+</AnchorPane>
