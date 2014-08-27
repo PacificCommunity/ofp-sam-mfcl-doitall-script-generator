@@ -5,7 +5,8 @@
  ***********************************************************************/
 .root{    
 }
-.titled-pane > * > * > AnchorPane {
+.titled-pane > * > * > AnchorPane,
+.titled-pane AnchorPane {
     -fx-padding: 0px;
 }
 .h1 {
