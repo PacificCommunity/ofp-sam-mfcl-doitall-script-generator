@@ -41,11 +41,14 @@
                         <RowConstraints vgrow="ALWAYS" />
                     </rowConstraints>
                     <children>
-                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.rowSpan="4" />
+                        <ImageView pickOnBounds="true" preserveRatio="true" GridPane.rowSpan="2147483647" GridPane.valignment="TOP">
+                     <image>
+                        <Image url="@MFCLDoIt.png" />
+                     </image></ImageView>
                         <Label fx:id="titleLabel" styleClass="h1" text="%APP_TITLE" GridPane.columnIndex="1" />
                         <Label fx:id="versionLabel" styleClass="h2" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <Label fx:id="copyrightLabel" text="%COPYRIGHT_LABEL" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <Accordion GridPane.columnSpan="2147483647" GridPane.rowIndex="4">
+                        <Accordion GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="4">
                             <panes>
                                 <TitledPane fx:id="creditsPane" animated="true" text="%ABOUT_CREDITS_LABEL">
                                     <content>
@@ -75,7 +78,7 @@
                                     </content>
                                 </TitledPane>                              
                             </panes>
-                            <expandedPane>
+                            <expandedPane> 
                                 <fx:reference source="creditsPane"/>
                             </expandedPane>
                         </Accordion>

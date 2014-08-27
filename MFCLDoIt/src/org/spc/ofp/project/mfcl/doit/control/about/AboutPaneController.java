@@ -24,6 +24,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import org.spc.ofp.project.mfcl.doit.Disposable;
 import org.spc.ofp.project.mfcl.doit.FXMLControllerBase;
+import org.spc.ofp.project.mfcl.doit.MFCLDoItConstants;
 
 /**
  * FXML Controller class
@@ -67,6 +68,8 @@ public final class AboutPaneController extends FXMLControllerBase implements Ini
 
     @Override
     public void initialize(final URL url, final ResourceBundle bundle) {
+        versionLabel.setText(MFCLDoItConstants.getInstance().getVersion());
+        //
         addonsController.applicationProperty().bind(applicationProperty());
         //
         final Properties properties = System.getProperties();
